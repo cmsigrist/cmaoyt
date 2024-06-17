@@ -1,0 +1,182 @@
+// import './App.css';
+// import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+// import { Suspense, useContext } from 'react';
+// import Register from '../pages/auth/Register';
+// import Reset from '../pages/auth/Reset';
+// import Home from '../pages/Home';
+// import {
+//   ROUTE_HOME,
+//   ROUTE_REGISTER,
+//   ROUTE_PASSWORD_RESET,
+//   ROUTE_DESSERTS_INDEX,
+//   ROUTE_BEVERAGES_INDEX,
+//   ROUTE_FORBIDDEN,
+//   ROUTE_MEALS_INDEX,
+//   ROUTE_RECIPE_NEW
+// } from '../Routes';
+// import NavBar from './NavBar';
+// import Footer from './Footer';
+// import DessertsIndex from '../pages/desserts';
+// import Recipe from '../components/utils/Recipe';
+// import ClientError from './ClientError';
+// import BeveragesIndex from '../pages/beverages';
+// import MealsIndex from '../pages/meals';
+// import RecipeNew from '../pages/new/New';
+// import { DBUserContext } from '..';
+// import Category from '../components/utils/Category';
+// import Flash from './Flash';
+
+// function App() {
+//   const DBUser = useContext(DBUserContext);
+
+//   const RequireAuth = ({ children }: { children: JSX.Element; roles?: string[] }): JSX.Element => {
+//     let location = useLocation();
+
+//     if (!DBUser.isLogged || DBUser.role !== 'admin') {
+//       return <Navigate to={ROUTE_FORBIDDEN} state={{ from: location }} replace />;
+//     }
+
+//     return children;
+//   };
+
+//   return (
+//     <Suspense fallback="...loading app">
+//       <Router>
+//         <div className="App flex flex-col h-screen justify-between">
+//           <div className="app-nav">
+//             <NavBar />
+//           </div>
+//           <div>
+//             <Flash />
+//           </div>
+//           <div
+//             data-testid="content"
+//             className="app-page mb-auto flex flex-row justify-center items-center w-full">
+//             <Routes>
+//               {
+//                 <Route
+//                   path={ROUTE_RECIPE_NEW}
+//                   element={
+//                     <RequireAuth>
+//                       <RecipeNew />
+//                     </RequireAuth>
+//                   }
+//                 />
+//               }
+
+//               {/*<Route path={ROUTE_LOGGED} element={<Logged />} />
+//               <Route path={ROUTE_SETTINGS} element={<Settings />} />*/}
+//               <Route path={ROUTE_HOME} element={<Home />} />
+//               <Route
+//                 path={ROUTE_REGISTER}
+//                 element={
+//                   <RequireAuth>
+//                     <Register />
+//                   </RequireAuth>
+//                 }
+//               />
+//               <Route
+//                 path={ROUTE_PASSWORD_RESET}
+//                 element={
+//                   <RequireAuth>
+//                     <Reset />
+//                   </RequireAuth>
+//                 }
+//               />
+//               <Route
+//                 path={ROUTE_DESSERTS_INDEX}
+//                 element={
+//                   <RequireAuth>
+//                     <DessertsIndex />
+//                   </RequireAuth>
+//                 }
+//               />
+//               <Route
+//                 path={ROUTE_MEALS_INDEX}
+//                 element={
+//                   <RequireAuth>
+//                     <MealsIndex />
+//                   </RequireAuth>
+//                 }
+//               />
+//               <Route
+//                 path={ROUTE_BEVERAGES_INDEX}
+//                 element={
+//                   <RequireAuth>
+//                     <BeveragesIndex />
+//                   </RequireAuth>
+//                 }
+//               />
+//               <Route
+//                 path={'/:type/:recipeID'}
+//                 element={
+//                   <RequireAuth>
+//                     <Recipe />
+//                   </RequireAuth>
+//                 }
+//               />
+//               <Route
+//                 path={'/:type/category/:category'}
+//                 element={
+//                   <RequireAuth>
+//                     <Category />
+//                   </RequireAuth>
+//                 }
+//               />
+//               <Route
+//                 path={'/:type/category/:category/:recipeID'}
+//                 element={
+//                   <RequireAuth>
+//                     <Recipe />
+//                   </RequireAuth>
+//                 }
+//               />
+//               <Route
+//                 path={'/edit/:type/category/:category/:recipeID'}
+//                 element={
+//                   <RequireAuth>
+//                     <RecipeNew />
+//                   </RequireAuth>
+//                 }
+//               />
+//               <Route
+//                 path={'/edit/:type/:recipeID'}
+//                 element={
+//                   <RequireAuth>
+//                     <RecipeNew />
+//                   </RequireAuth>
+//                 }
+//               />
+//               <Route
+//                 path="*"
+//                 element={
+//                   <ClientError
+//                     statusCode={404}
+//                     description={'The page you are looking for does not exist.'}
+//                     title={'Page not found'}
+//                   />
+//                 }
+//               />
+//               <Route
+//                 path={ROUTE_FORBIDDEN}
+//                 element={
+//                   <ClientError
+//                     statusCode={403}
+//                     title={'Forbidden page'}
+//                     description={'You are not authorized to access this page.'}
+//                   />
+//                 }
+//               />
+//             </Routes>
+//           </div>
+
+//           <div>
+//             <Footer />
+//           </div>
+//         </div>
+//       </Router>
+//     </Suspense>
+//   );
+// }
+
+// export default App;

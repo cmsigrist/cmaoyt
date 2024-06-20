@@ -1,5 +1,5 @@
-import { FC } from 'react';
-import { RecipeInfo } from '../types/recipe';
+import { FC } from "react";
+import { RecipeInfo } from "../types/recipe";
 import {
   Typography,
   Stack,
@@ -7,9 +7,12 @@ import {
   Button,
   Divider,
   CircularProgress,
-} from '@mui/material';
-import { theme } from '../styles/theme';
-import EditIcon from '@mui/icons-material/Edit';
+} from "@mui/material";
+import { theme } from "../styles/theme";
+import EditIcon from "@mui/icons-material/Edit";
+import { ROUTE_EDIT_RECIPE } from "../routes";
+import { Link } from "react-router-dom";
+import dummy from "../assets/espresso_cookies.jpg";
 
 type RecipeDisplayProps = {
   recipe?: RecipeInfo;
@@ -22,26 +25,26 @@ const RecipeDisplay: FC<RecipeDisplayProps> = ({ recipe, preview }) => {
       {recipe !== undefined ? (
         <>
           <Typography
-            textAlign={'center'}
+            textAlign={"center"}
             variant="h2"
             color={theme.palette.primary.main}
             marginBottom={6}
           >
             {recipe.title}
           </Typography>
-          <Stack direction={'row'} width={'100%'} spacing={8} marginBottom={3}>
+          <Stack direction={"row"} width={"100%"} spacing={8} marginBottom={3}>
             <img
-              src={recipe.imgURL}
+              src={recipe.imgURL != "" ? recipe.imgURL : dummy}
               alt={recipe.title}
               style={{
-                objectFit: 'cover',
-                width: '50%',
-                maxWidth: '450px',
-                maxHeight: '600px',
+                objectFit: "cover",
+                width: "50%",
+                maxWidth: "450px",
+                maxHeight: "600px",
               }}
             />
             {recipe.quote !== undefined && (
-              <Stack direction={'column'} justifyContent={'center'}>
+              <Stack direction={"column"} justifyContent={"center"}>
                 <Box sx={{ width: 30, height: 30 }}>
                   <svg
                     color={theme.palette.secondary.main}
@@ -56,7 +59,7 @@ const RecipeDisplay: FC<RecipeDisplayProps> = ({ recipe, preview }) => {
                     />
                   </svg>
                 </Box>
-                <Typography fontStyle={'italic'} variant="h6" marginTop={1}>
+                <Typography fontStyle={"italic"} variant="h6" marginTop={1}>
                   "{recipe.quote.content}"
                 </Typography>
                 <Typography variant="h6" marginLeft={4}>
@@ -66,48 +69,60 @@ const RecipeDisplay: FC<RecipeDisplayProps> = ({ recipe, preview }) => {
             )}
             {!preview && (
               <Box>
-                <Button variant="outlined" startIcon={<EditIcon />}>
-                  Edit
-                </Button>
+                <Link
+                  to={ROUTE_EDIT_RECIPE(
+                    recipe.type,
+                    recipe.id,
+                    recipe.category
+                  )}
+                >
+                  <Button
+                    variant="outlined"
+                    startIcon={<EditIcon />}
+                    sx={{ lineHeight: 0 }}
+                  >
+                    Edit
+                  </Button>
+                </Link>
               </Box>
             )}
           </Stack>
           <Divider />
-          <Stack direction={'row'} marginTop={2} spacing={2}>
-            <Typography fontWeight={'bold'}>YIELD</Typography>
+          <Stack direction={"row"} marginTop={2} spacing={2}>
+            <Typography fontWeight={"bold"}>YIELD</Typography>
             <Typography>
               {recipe.yield.quantity} {recipe.yield.piece}
             </Typography>
           </Stack>
-          <Stack direction={'row'} spacing={2}>
-            <Typography fontWeight={'bold'}>TIME</Typography>
+          <Stack direction={"row"} spacing={2}>
+            <Typography fontWeight={"bold"}>TIME</Typography>
             <Typography>
               {recipe.preparationTime.time} {recipe.preparationTime.unit}
             </Typography>
           </Stack>
           {recipe.ovenTemperature !== undefined && (
-            <Stack direction={'row'} spacing={2}>
-              <Typography fontWeight={'bold'}>OVEN</Typography>
+            <Stack direction={"row"} spacing={2}>
+              <Typography fontWeight={"bold"}>OVEN</Typography>
               <Typography>{recipe.ovenTemperature} °C</Typography>
             </Stack>
           )}
           <Divider sx={{ marginTop: 2 }} />
-          <Typography fontWeight={'bold'} marginY={2}>
+          <Typography fontWeight={"bold"} marginY={2}>
             INGREDIENTS
           </Typography>
           <Box marginLeft={2} marginBottom={2}>
-            {recipe.ingredients.map((ingredient) => (
-              <Typography>- {ingredient}</Typography>
+            {recipe.ingredients.map((ingredient, i) => (
+              <Typography key={i}>- {ingredient}</Typography>
             ))}
           </Box>
           <Divider />
-          <Typography fontWeight={'bold'} marginY={2}>
+          <Typography fontWeight={"bold"} marginY={2}>
             PREPARATION
           </Typography>
           <Box marginBottom={2}>
             {recipe.preparation.map((step, i) => (
-              <Stack marginBottom={2}>
-                <Typography fontWeight={'bold'}>Step {i + 1}</Typography>
+              <Stack marginBottom={2} key={i}>
+                <Typography fontWeight={"bold"}>Step {i + 1}</Typography>
                 <Typography marginLeft={2}>{step}</Typography>
               </Stack>
             ))}

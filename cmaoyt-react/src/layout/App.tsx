@@ -24,6 +24,8 @@ import { Box, Container, Stack } from '@mui/material';
 import Footer from './Footer';
 import Category from '../pages/Category';
 import Recipe from '../components/Recipe';
+import RecipeNew from '../pages/RecipeNew';
+import RecipeEdit from '../pages/RecipeEdit';
 
 function App() {
   // const DBUser = useContext(DBUserContext);
@@ -79,7 +81,7 @@ function App() {
               <Route path={ROUTE_DESSERTS} element={<Desserts />} />
               <Route path={ROUTE_MEALS} element={<Meals />} />
               <Route path={ROUTE_DRINKS} element={<Drinks />} />
-              <Route path={ROUTE_RECIPE_NEW} element={<Create />} />
+              <Route path={ROUTE_RECIPE_NEW} element={<RecipeNew />} />
               <Route
                 path={'/:type/category/:category'}
                 element={<Category />}
@@ -88,6 +90,14 @@ function App() {
               <Route
                 path={'/:type/category/:category/:recipeID'}
                 element={<Recipe />}
+              />
+              <Route
+                path={'/edit/:type/category/:category/:recipeID'}
+                element={
+                  // <RequireAuth>
+                    <RecipeEdit />
+                  // </RequireAuth>
+                }
               />
               {/* <Route
                 path={ROUTE_REGISTER}
@@ -106,14 +116,7 @@ function App() {
                 }
               />
   
-              <Route
-                path={'/edit/:type/category/:category/:recipeID'}
-                element={
-                  <RequireAuth>
-                    <RecipeNew />
-                  </RequireAuth>
-                }
-              />
+              
               <Route
                 path={'/edit/:type/:recipeID'}
                 element={

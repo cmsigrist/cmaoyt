@@ -1,13 +1,9 @@
 import { FC } from 'react';
 import { CategoryMetadata, Metadata, RecipeMetadata } from '../types/recipe';
 import {
-  Box,
   Card,
   CardActionArea,
-  CardContent,
   CardMedia,
-  ImageList,
-  ImageListItem,
   Stack,
   Typography,
 } from '@mui/material';
@@ -32,9 +28,7 @@ const RecipeThumbnail: FC<{ metadata: Metadata }> = ({ metadata }) => {
     >
       <Card
         sx={{
-          width: '90%',
-          maxWidth: '350px',
-          height: '480px',
+          maxHeight: '480px',
           marginBottom: 2,
           justifySelf: 'center',
           alignSelf: 'center',
@@ -44,7 +38,6 @@ const RecipeThumbnail: FC<{ metadata: Metadata }> = ({ metadata }) => {
           <Link to={route}>
             <CardMedia
               component="img"
-              height="480px"
               image={dummy}
               alt={metadata.title}
             />

@@ -1,31 +1,24 @@
-import './App.css';
-import {
-  BrowserRouter as Router,
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-} from 'react-router-dom';
-import { Suspense, useContext } from 'react';
-import ResponsiveAppBar from './ResponsiveAppBar';
+import "./App.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Suspense } from "react";
+import ResponsiveAppBar from "./ResponsiveAppBar";
 import {
   ROUTE_DESSERTS,
   ROUTE_DRINKS,
   ROUTE_HOME,
   ROUTE_MEALS,
   ROUTE_RECIPE_NEW,
-} from '../routes';
-import Home from '../pages/Home';
-import Desserts from '../pages/Desserts';
-import Meals from '../pages/Meals';
-import Drinks from '../pages/Drinks';
-import Create from '../pages/Create';
-import { Box, Container, Stack } from '@mui/material';
-import Footer from './Footer';
-import Category from '../pages/Category';
-import Recipe from '../components/Recipe';
-import RecipeNew from '../pages/RecipeNew';
-import RecipeEdit from '../pages/RecipeEdit';
+} from "../routes";
+import Home from "../pages/Home";
+import Desserts from "../pages/Desserts";
+import Meals from "../pages/Meals";
+import Drinks from "../pages/Drinks";
+import { Container, Stack } from "@mui/material";
+import Footer from "./Footer";
+import Category from "../pages/Category";
+import Recipe from "../pages/Recipe";
+import RecipeNew from "../pages/RecipeNew";
+import RecipeEdit from "../pages/RecipeEdit";
 
 function App() {
   // const DBUser = useContext(DBUserContext);
@@ -50,17 +43,17 @@ function App() {
   return (
     <Suspense fallback="...loading app">
       <Router>
-        <Stack minHeight={'100vh'} direction={'column'}>
+        <Stack minHeight={"100vh"} direction={"column"}>
           <ResponsiveAppBar />
           {/* <Flash /> */}
           <Container
             maxWidth="xl"
             sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
               flexGrow: 1,
-              height: '100%',
+              height: "100%",
             }}
           >
             <Routes>
@@ -83,19 +76,19 @@ function App() {
               <Route path={ROUTE_DRINKS} element={<Drinks />} />
               <Route path={ROUTE_RECIPE_NEW} element={<RecipeNew />} />
               <Route
-                path={'/:type/category/:category'}
+                path={"/:type/category/:category"}
                 element={<Category />}
               />
-              <Route path={'/:type/:recipeID'} element={<Recipe />} />
+              <Route path={"/:type/:recipeID"} element={<Recipe />} />
               <Route
-                path={'/:type/category/:category/:recipeID'}
+                path={"/:type/category/:category/:recipeID"}
                 element={<Recipe />}
               />
               <Route
-                path={'/edit/:type/category/:category/:recipeID'}
+                path={"/edit/:type/category/:category/:recipeID"}
                 element={
                   // <RequireAuth>
-                    <RecipeEdit />
+                  <RecipeEdit />
                   // </RequireAuth>
                 }
               />

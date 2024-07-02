@@ -2,21 +2,14 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  AccordionActions,
   Button,
   Stack,
   Box,
-  TextField,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   useTheme,
-  Typography,
-  IconButton,
+  styled,
 } from "@mui/material";
+import { FC, useEffect, useState } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { FC, memo, useCallback, useEffect, useState } from "react";
 import {
   RecipeInfo,
   RecipeType,
@@ -26,17 +19,28 @@ import {
 } from "../../types/recipe";
 import { useParams } from "react-router-dom";
 import RecipeDisplay from "../../components/RecipeDisplay";
-import RecipeList from "./RecipeList";
+import RecipeList from "./forms/RecipeList";
+import RecipeYield from "./forms/RecipeYield";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import preview from "../../assets/espresso_cookies.jpg";
+import RecipeCategory from "./forms/RecipeCategory";
+import RecipeTitle from "./forms/RecipeTitle";
+import RecipeTime from "./forms/RecipeTime";
+import RecipeOven from "./forms/RecipeOven";
+import RecipeQuote from "./forms/RecipeQuote";
+import { dummy } from "../../components/dummies";
+import RecipeActions from "./RecipeActions";
 
 const RecipeForm: FC = () => {
-  const [recipe, setRecipe] = useState<RecipeInfo>(emptyRecipe);
   const { type, category, recipeID } = useParams();
+  const [recipe, setRecipe] = useState<RecipeInfo>(emptyRecipe);
+  const [image, setImage] = useState<Blob | MediaSource>();
   const isEditMode = type !== undefined && recipeID !== undefined;
   const newYield: YieldType = { quantity: 0, piece: "people" };
   const newTime: TimeType = { time: 0, unit: "min" };
   const newRecipe: RecipeInfo = {
     id: "",
-    title: "",
+    title: "Recipe title",
     ingredients: [],
     preparation: [],
     yield: newYield,
@@ -51,13 +55,30 @@ const RecipeForm: FC = () => {
   };
   const theme = useTheme();
 
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+  });
+
   useEffect(() => {
     if (isEditMode) {
       //fetch recipe
+      setRecipe(dummy);
     } else {
       setRecipe(newRecipe);
     }
   }, []);
+
+  useEffect(() => {
+    console.log(recipe);
+  }, [recipe]);
 
   const handleUpdate = (payload: any, action: string) => {
     if (recipe !== undefined) {
@@ -68,35 +89,18 @@ const RecipeForm: FC = () => {
         case "type":
           setRecipe({ ...recipe, type: payload });
           break;
-        case "yield":
-          setRecipe({ ...recipe, yield: payload });
-          break;
-        case "time":
-          setRecipe({ ...recipe, preparationTime: payload });
-          break;
-        case "category":
-          setRecipe({ ...recipe, category: payload });
-          break;
-        case "oven":
-          setRecipe({ ...recipe, ovenTemperature: payload });
-          break;
-        case "quote":
-          setRecipe({ ...recipe, quote: payload });
-          break;
-        case "source":
-          setRecipe({ ...recipe, source: payload });
-          break;
-        case "image":
-          setRecipe({ ...recipe, imgURL: payload });
-          break;
       }
     }
   };
 
-  // const ingredientList = memo()
+  const handleImage = (e: any) => {
+    const file = e.target.files[0];
+    console.log(file);
+    setImage(file);
+  };
 
   return (
-    <Stack direction={"row"} spacing={2}>
+    <Stack direction={"row"} spacing={2} width={"100%"}>
       <Box width="50%">
         <Accordion defaultExpanded>
           <AccordionSummary
@@ -107,40 +111,11 @@ const RecipeForm: FC = () => {
             Recipe Title
           </AccordionSummary>
           <AccordionDetails>
-            <Stack direction={"row"} spacing={1}>
-              <TextField
-                fullWidth
-                required
-                id="outlined-required"
-                label="Title"
-                defaultValue=""
-                size="small"
-                onChange={(target) =>
-                  handleUpdate(target.target.value, "title")
-                }
-              />
-              <FormControl fullWidth sx={{ maxWidth: "30%" }}>
-                <InputLabel id="demo-simple-select-label">
-                  Recipe type
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={
-                    recipe !== undefined ? recipe?.type : RecipeType.Desserts
-                  }
-                  label="Recipe Type"
-                  size="small"
-                  onChange={(target) =>
-                    handleUpdate(target.target.value, "type")
-                  }
-                >
-                  <MenuItem value={RecipeType.Desserts}>Desserts</MenuItem>
-                  <MenuItem value={RecipeType.Meals}>Meals</MenuItem>
-                  <MenuItem value={RecipeType.Drinks}>Drinks</MenuItem>
-                </Select>
-              </FormControl>
-            </Stack>
+            <RecipeTitle
+              title={recipe.title}
+              type={recipe.type}
+              handleUpdate={handleUpdate}
+            />
           </AccordionDetails>
         </Accordion>
         <Accordion>
@@ -168,7 +143,7 @@ const RecipeForm: FC = () => {
             Preparation
           </AccordionSummary>
           <AccordionDetails>
-          <RecipeList
+            <RecipeList
               list={recipe.preparation || []}
               type="preparation"
               setRecipe={(preparation) => setRecipe({ ...recipe, preparation })}
@@ -184,8 +159,10 @@ const RecipeForm: FC = () => {
             Yield
           </AccordionSummary>
           <AccordionDetails>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
+            <RecipeYield
+              recipeYield={recipe.yield}
+              handleUpdate={(y) => setRecipe({ ...recipe, yield: y })}
+            />
           </AccordionDetails>
         </Accordion>
         <Accordion>
@@ -197,8 +174,12 @@ const RecipeForm: FC = () => {
             Preparation Time
           </AccordionSummary>
           <AccordionDetails>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
+            <RecipeTime
+              recipeTime={recipe.preparationTime}
+              handleUpdate={(time) =>
+                setRecipe({ ...recipe, preparationTime: time })
+              }
+            />
           </AccordionDetails>
         </Accordion>
         <Accordion>
@@ -210,8 +191,14 @@ const RecipeForm: FC = () => {
             Category
           </AccordionSummary>
           <AccordionDetails>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
+            <RecipeCategory
+              category={recipe.category}
+              handleUpdate={(category) => {
+                if (category !== "none") {
+                  setRecipe({ ...recipe, category });
+                }
+              }}
+            />
           </AccordionDetails>
         </Accordion>
         <Accordion>
@@ -223,8 +210,12 @@ const RecipeForm: FC = () => {
             Oven Temperature
           </AccordionSummary>
           <AccordionDetails>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
+            <RecipeOven
+              temperature={recipe.ovenTemperature}
+              handleUpdate={(ovenTemperature) =>
+                setRecipe({ ...recipe, ovenTemperature })
+              }
+            />
           </AccordionDetails>
         </Accordion>
         <Accordion>
@@ -236,8 +227,11 @@ const RecipeForm: FC = () => {
             Quote
           </AccordionSummary>
           <AccordionDetails>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
+            <RecipeQuote
+              quote={recipe.quote}
+              type="quote"
+              handleUpdate={(quote) => setRecipe({ ...recipe, quote })}
+            />
           </AccordionDetails>
         </Accordion>
         <Accordion>
@@ -249,8 +243,11 @@ const RecipeForm: FC = () => {
             Source
           </AccordionSummary>
           <AccordionDetails>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
+            <RecipeQuote
+              quote={recipe.source}
+              type="source"
+              handleUpdate={(source) => setRecipe({ ...recipe, source })}
+            />
           </AccordionDetails>
         </Accordion>
         <Accordion>
@@ -262,17 +259,37 @@ const RecipeForm: FC = () => {
             Upload Image
           </AccordionSummary>
           <AccordionDetails>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
+            <Button
+              size="small"
+              component="label"
+              role={undefined}
+              variant="contained"
+              tabIndex={-1}
+              startIcon={<CloudUploadIcon />}
+              sx={{
+                width: "100%",
+                backgroundColor: theme.palette.primary.light,
+              }}
+            >
+              Upload Image
+              <VisuallyHiddenInput type="file" onChange={handleImage} />
+            </Button>
           </AccordionDetails>
-          <AccordionActions>
-            <Button>Cancel</Button>
-            <Button>Agree</Button>
-          </AccordionActions>
         </Accordion>
+        <RecipeActions recipe={recipe} setRecipe={setRecipe} image={image} isEditMode={isEditMode} />
       </Box>
       <Box width="50%">
-        <RecipeDisplay recipe={recipe} preview={true} />
+        <RecipeDisplay
+          recipe={recipe}
+          preview={true}
+          imgPreviewURL={
+            image !== undefined
+              ? URL.createObjectURL(image)
+              : recipe.imgURL !== ""
+              ? recipe.imgURL
+              : preview
+          }
+        />
       </Box>
     </Stack>
   );

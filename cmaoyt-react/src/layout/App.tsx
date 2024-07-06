@@ -5,6 +5,7 @@ import ResponsiveAppBar from "./ResponsiveAppBar";
 import {
   ROUTE_DESSERTS,
   ROUTE_DRINKS,
+  ROUTE_FORBIDDEN,
   ROUTE_HOME,
   ROUTE_MEALS,
   ROUTE_RECIPE_NEW,
@@ -19,6 +20,7 @@ import Category from "../pages/Category";
 import Recipe from "../pages/Recipe";
 import RecipeNew from "../pages/RecipeNew";
 import RecipeEdit from "../pages/RecipeEdit";
+import ClientError from "../pages/ClientError";
 
 function App() {
   // const DBUser = useContext(DBUserContext);
@@ -51,7 +53,6 @@ function App() {
             sx={{
               display: "flex",
               justifyContent: "center",
-              alignItems: "center",
               flexGrow: 1,
               height: "100%",
             }}
@@ -92,30 +93,12 @@ function App() {
                   // </RequireAuth>
                 }
               />
-              {/* <Route
-                path={ROUTE_REGISTER}
-                element={
-                  <RequireAuth>
-                    <Register />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path={ROUTE_PASSWORD_RESET}
-                element={
-                  <RequireAuth>
-                    <Reset />
-                  </RequireAuth>
-                }
-              />
-  
-              
               <Route
                 path={'/edit/:type/:recipeID'}
                 element={
-                  <RequireAuth>
-                    <RecipeNew />
-                  </RequireAuth>
+                  // <RequireAuth>
+                  <RecipeEdit />
+                  // </RequireAuth>
                 }
               />
               <Route
@@ -136,6 +119,22 @@ function App() {
                     title={'Forbidden page'}
                     description={'You are not authorized to access this page.'}
                   />
+                }
+              /> 
+              {/* <Route
+                path={ROUTE_REGISTER}
+                element={
+                  <RequireAuth>
+                    <Register />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path={ROUTE_PASSWORD_RESET}
+                element={
+                  <RequireAuth>
+                    <Reset />
+                  </RequireAuth>
                 }
               /> */}
             </Routes>

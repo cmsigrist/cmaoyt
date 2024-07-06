@@ -13,6 +13,7 @@ import { theme } from "../styles/theme";
 import EditIcon from "@mui/icons-material/Edit";
 import { ROUTE_EDIT_RECIPE } from "../routes";
 import { Link } from "react-router-dom";
+import Loading from "./Loading";
 
 type RecipeDisplayProps = {
   recipe?: RecipeInfo;
@@ -40,12 +41,12 @@ const RecipeDisplay: FC<RecipeDisplayProps> = ({
           <Grid
             width={"100%"}
             container
-            columnSpacing={{ xs: 0, sm: 0, md: 2, lg: 2, xl: 2 }}
+            columnSpacing={{ xs: 0, md: 2}}
             rowSpacing={3}
             marginBottom={3}
             justifyContent={"space-between"}
           >
-            <Grid item xs={12} sm={12} md={5} lg={5} xl={5}>
+            <Grid item xs={12} md={6} lg={5}>
               <img
                 src={preview ? imgPreviewURL : recipe.imgURL}
                 alt={recipe.title}
@@ -56,8 +57,8 @@ const RecipeDisplay: FC<RecipeDisplayProps> = ({
                 }}
               />
             </Grid>
-            <Grid item>
-              {recipe.quote !== undefined && (
+            {recipe.quote !== undefined && (
+              <Grid item md={preview ? 6 : 5}>
                 <Stack
                   direction={"column"}
                   height={"100%"}
@@ -84,11 +85,11 @@ const RecipeDisplay: FC<RecipeDisplayProps> = ({
                     — {recipe.quote.author}
                   </Typography>
                 </Stack>
-              )}
-            </Grid>
+              </Grid>
+            )}
 
-            <Grid item>
-              {!preview && (
+            {!preview && (
+              <Grid item>
                 <Box>
                   <Link
                     to={ROUTE_EDIT_RECIPE(
@@ -106,8 +107,8 @@ const RecipeDisplay: FC<RecipeDisplayProps> = ({
                     </Button>
                   </Link>
                 </Box>
-              )}
-            </Grid>
+              </Grid>
+            )}
           </Grid>
           <Divider />
           <Stack
@@ -173,7 +174,7 @@ const RecipeDisplay: FC<RecipeDisplayProps> = ({
           )}
         </>
       ) : (
-        <CircularProgress />
+        <Loading fullHeight />
       )}
     </>
   );

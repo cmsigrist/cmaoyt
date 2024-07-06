@@ -20,4 +20,4 @@ export const theme = createTheme({
   },
 });
 
-export const width = { xs: "95%", sm: "95%", md: "80%", lg: "80%", xl: "80%" };
+export const width = { xs: "95%", lg: "80%" };

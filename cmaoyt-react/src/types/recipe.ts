@@ -1,9 +1,9 @@
-import { Language } from './language';
+import { Language } from "./language";
 
 export enum RecipeType {
-  Desserts = 'desserts',
-  Meals = 'meals',
-  Drinks = 'drinks',
+  Desserts = "desserts",
+  Meals = "meals",
+  Drinks = "drinks",
 }
 
 export const allRecipeTypes = [
@@ -11,12 +11,6 @@ export const allRecipeTypes = [
   RecipeType.Meals,
   RecipeType.Drinks,
 ];
-
-// export type Ingredient = {
-//   quantity: string;
-//   unit: string;
-//   name: string;
-// };
 
 export type YieldType = { quantity: number; piece: string };
 
@@ -40,37 +34,66 @@ export type RecipeInfo = {
   language?: Language;
 };
 
-export type RecipeMetadata = Metadata & {
-  id: string;
-};
+export class Metadata {
+  type;
+  title;
+  constructor(title: string, type: RecipeType) {
+    this.title = title
+    this.type = type;
+  }
 
-export type CategoryMetadata = Metadata & {
-  category: string;
-};
+  get getTitle() {
+    return this.title
+  }
 
-export type Metadata = {
-  title: string;
-  imgURL: string;
-  type: RecipeType;
-  recipes?: RecipeMetadata[];
-};
+  get getType() {
+    return this.type;
+  }
+}
 
-export type DatabaseMetadata = {
-  title: string;
-  imgURL?: string;
-};
+export class RecipeMetadata extends Metadata {
+  id;
+  imgURL;
+
+  constructor(id: string, title: string, type: RecipeType, imgURL: string) {
+    super(title, type);
+    this.id = id;
+    this.imgURL = imgURL;
+  }
+
+  get getId() {
+    return this.id;
+  }
+
+  get getImgURL() {
+    return this.imgURL;
+  }
+}
+
+export class CategoryMetadata extends Metadata {
+  recipes;
+
+  constructor(title: string, type: RecipeType, recipes: RecipeMetadata[]) {
+    super(title, type);
+    this.recipes = recipes;
+  }
+
+  get getRecipes() {
+    return this.recipes;
+  }
+}
 
 export type RecipeList = {
   ids: string[];
 };
 
 // export const emptyIngredient: Ingredient = { quantity: '', unit: '', name: '' };
-export const emptyTime: TimeType = { time: 0, unit: 'min' };
-export const emptyYield: YieldType = { quantity: 0, piece: 'people' };
-export const emptyQuote: QuoteType = { content: '', author: '' };
+export const emptyTime: TimeType = { time: 0, unit: "min" };
+export const emptyYield: YieldType = { quantity: 0, piece: "people" };
+export const emptyQuote: QuoteType = { content: "", author: "" };
 export const emptyRecipe: RecipeInfo = {
-  id: '',
-  title: '',
+  id: "",
+  title: "",
   ingredients: [],
   preparation: [],
   yield: emptyYield,
@@ -79,7 +102,7 @@ export const emptyRecipe: RecipeInfo = {
   quote: undefined,
   type: RecipeType.Desserts,
   source: undefined,
-  imgURL: '',
+  imgURL: "",
   category: undefined,
   language: undefined,
 };

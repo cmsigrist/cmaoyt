@@ -1,4 +1,10 @@
-import { Metadata, RecipeInfo, RecipeType } from "../types/recipe";
+import {
+  CategoryMetadata,
+  Metadata,
+  RecipeInfo,
+  RecipeMetadata,
+  RecipeType,
+} from "../types/recipe";
 import dummyLogo from "../assets/espresso_cookies.jpg";
 
 export const dummy: RecipeInfo = {
@@ -25,36 +31,30 @@ export const dummy: RecipeInfo = {
 };
 
 export const dummies: Metadata[] = [
-  {
-    id: "0",
-    title: "Hello there",
-    imgURL: "../assets/espresso_cookies.jpg",
-    type: RecipeType.Desserts,
-  } as Metadata,
-  {
-    id: "1",
-    title: "Cookies",
-    imgURL: "../assets/espresso_cookies.jpg",
-    type: RecipeType.Desserts,
-  } as Metadata,
-  {
-    id: "2",
-    title: "Cookies",
-    imgURL: "../assets/espresso_cookies.jpg",
-    type: RecipeType.Desserts,
-  } as Metadata,
-  {
-    title: "Category",
-    imgURL: "../assets/espresso_cookies.jpg",
-    type: RecipeType.Desserts,
-    category: "More cookies",
-    recipes: [
-      {
-        id: "0",
-        title: "Hello there",
-        imgURL: "../assets/espresso_cookies.jpg",
-        type: RecipeType.Desserts,
-      },
-    ],
-  } as Metadata,
+  new RecipeMetadata(
+    "0",
+    "Hello there",
+    RecipeType.Desserts,
+    "../assets/espresso_cookies.jpg",
+  ),
+  new RecipeMetadata(
+    "1",
+    "Cookies",
+    RecipeType.Desserts,
+    "../assets/espresso_cookies.jpg",
+  ),
+  new RecipeMetadata(
+    "2",
+    "Cookies",
+    RecipeType.Desserts,
+    "../assets/espresso_cookies.jpg",
+  ),
+  new CategoryMetadata("More cookies", RecipeType.Desserts, [
+    new RecipeMetadata(
+      "3",
+      "Hello there",
+      RecipeType.Desserts,
+      "../assets/espresso_cookies.jpg",
+    ),
+  ]),
 ];

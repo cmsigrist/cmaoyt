@@ -6,7 +6,6 @@ import {
   AccordionDetails,
   Button,
   useTheme,
-  styled,
 } from "@mui/material";
 import RecipeCategory from "./accordion/RecipeCategory";
 import RecipeList from "./accordion/RecipeList";
@@ -17,37 +16,31 @@ import RecipeTitle from "./accordion/RecipeTitle";
 import RecipeYield from "./accordion/RecipeYield";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { HiddenInput } from "../../../components/HiddenInput";
+import { createId } from "../../../util/marshal";
 
 type RecipeAccordionProps = {
   recipe: RecipeInfo;
   setRecipe: (recipe: RecipeInfo) => void;
   setImage: (image: Blob | MediaSource) => void;
+  invalidInputs: Map<string, string>
+  setInvalidInputs: (i: Map<string, string>) => void
 };
 
 const RecipeAccordion: FC<RecipeAccordionProps> = ({
   recipe,
   setRecipe,
   setImage,
+  invalidInputs,
+  setInvalidInputs
 }) => {
   const theme = useTheme();
-
-  const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    height: 1,
-    overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    whiteSpace: "nowrap",
-    width: 1,
-  });
 
   const handleUpdate = (payload: any, action: string) => {
     if (recipe !== undefined) {
       switch (action) {
         case "title":
-          setRecipe({ ...recipe, title: payload });
+          setRecipe({ ...recipe, id: createId(payload), title: payload });
           break;
         case "type":
           setRecipe({ ...recipe, type: payload });
@@ -155,6 +148,7 @@ const RecipeAccordion: FC<RecipeAccordionProps> = ({
         <AccordionDetails>
           <RecipeCategory
             category={recipe.category}
+            type={recipe.type}
             handleUpdate={(category) => {
               if (category !== "none") {
                 setRecipe({ ...recipe, category });
@@ -224,9 +218,7 @@ const RecipeAccordion: FC<RecipeAccordionProps> = ({
           <Button
             size="small"
             component="label"
-            role={undefined}
             variant="contained"
-            tabIndex={-1}
             startIcon={<CloudUploadIcon />}
             sx={{
               width: "100%",
@@ -234,7 +226,7 @@ const RecipeAccordion: FC<RecipeAccordionProps> = ({
             }}
           >
             Upload Image
-            <VisuallyHiddenInput type="file" onChange={handleImage} />
+            <HiddenInput type="file" onChange={handleImage} />
           </Button>
         </AccordionDetails>
       </Accordion>

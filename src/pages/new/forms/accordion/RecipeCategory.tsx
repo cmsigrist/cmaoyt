@@ -11,30 +11,41 @@ import {
 } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
+import { fetchCategories } from "../../../../firebase/database";
+import { RecipeType } from "../../../../types/recipe";
 
 type RecipeCategoryProps = {
   category: string | undefined;
+  type: RecipeType;
   handleUpdate: (category: string | undefined) => void;
 };
 
 const RecipeCategory: FC<RecipeCategoryProps> = ({
   category,
+  type,
   handleUpdate,
 }) => {
   const theme = useTheme();
-  const [categories, setCategories] = useState<string[]>([
-    "None",
-    "Cookies",
-    "Waffles",
-  ]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [newCategory, setNewCategory] = useState<string | undefined>(undefined);
-  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [show, setShow] = useState<boolean>();
 
   useEffect(() => {
     // fetch categories
-    setCategories(["None", "Cookies", "Waffles"]);
-    setShow(category !== undefined)
+    fetchCategories(type, setCategories, setLoading, setError);
+  }, []);
+
+  useEffect(() => {
+    setShow(category !== undefined);
+
+    // Could happen when importing a recipe with a new category
+    if (category !== undefined && !categories.includes(category)) {
+      const newCategories = categories;
+      newCategories.push(category);
+      setCategories(newCategories);
+    }
   }, [category]);
 
   const handleNewCategory = (c: string | undefined) => {
@@ -45,7 +56,7 @@ const RecipeCategory: FC<RecipeCategoryProps> = ({
       setNewCategory(undefined);
     }
     if (c === "") {
-      setError(true);
+      setError("Category cannot be empty");
     }
   };
 
@@ -118,10 +129,10 @@ const RecipeCategory: FC<RecipeCategoryProps> = ({
                 label="Category"
                 value={newCategory}
                 size="small"
-                error={error}
-                helperText={error ? "Category cannot be empty." : ""}
+                error={error !== ""}
+                helperText={error}
                 onChange={(event) => {
-                  setError(false);
+                  setError("");
                   setNewCategory(event.target.value);
                 }}
               />

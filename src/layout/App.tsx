@@ -77,16 +77,16 @@ function App() {
               <Route path={ROUTE_DRINKS} element={<Drinks />} />
               <Route path={ROUTE_RECIPE_NEW} element={<RecipeNew />} />
               <Route
-                path={"/:type/category/:category"}
+                path={"/:type/category/:categoryId"}
                 element={<Category />}
               />
-              <Route path={"/:type/:recipeID"} element={<Recipe />} />
+              <Route path={"/:type/:recipeId"} element={<Recipe />} />
               <Route
-                path={"/:type/category/:category/:recipeID"}
+                path={"/:type/category/:categoryId/:recipeId"}
                 element={<Recipe />}
               />
               <Route
-                path={"/edit/:type/category/:category/:recipeID"}
+                path={"/edit/:type/category/:categoryId/:recipeId"}
                 element={
                   // <RequireAuth>
                   <RecipeEdit />
@@ -94,7 +94,7 @@ function App() {
                 }
               />
               <Route
-                path={'/edit/:type/:recipeID'}
+                path={'/edit/:type/:id'}
                 element={
                   // <RequireAuth>
                   <RecipeEdit />

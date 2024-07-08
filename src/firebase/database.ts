@@ -15,13 +15,18 @@ import {
   RecipeMetadata,
   RecipeType,
 } from "../types/recipe";
+import { createId, marshallRecipe } from "../util/marshal";
 
 const db = getDatabase(app);
 const metadataRef = ref(db, "metadata/");
 
+// --------------------------------------------------------------------------
+// ---------------------------------METADATA---------------------------------
+// --------------------------------------------------------------------------
 const fetchAllMetadata = async (
   type: RecipeType,
   setMetadata: (m: Metadata[]) => void,
+  setTitle: (title: string) => void,
   setLoading: (l: boolean) => void,
   setError: (e: string) => void,
   category?: string
@@ -37,42 +42,68 @@ const fetchAllMetadata = async (
   snapshot.forEach((s) => {
     if (s.key !== null) {
       //recipe
-      if (s.val().title !== undefined) {
+      if (s.val().imgURL !== undefined) {
         let newMetadata = new RecipeMetadata(
           s.key,
           s.val().title,
           type,
-          s.val().imgURL,
+          s.val().imgURL
         );
         metadata.push(newMetadata);
-      }
+      } else {
+        // It's the title of the category don't add to metadata list
+        if (s.key === "title") {
+          setTitle(s.val())
+        } else {
+          // category
+          const recipes: RecipeMetadata[] = [];
 
-      // category
-      if (s.val().title === undefined) {
-        const recipes: RecipeMetadata[] = [];
+          s.forEach((child: any) => {
+            if (child.val().title !== undefined)
+              recipes.push(
+                new RecipeMetadata(
+                  child.key,
+                  child.val().title,
+                  type,
+                  child.val().imgURL
+                )
+              );
+          });
 
-        s.forEach((child: any) => {
-          if (child.val().title !== undefined)
-            recipes.push(
-              new RecipeMetadata(
-                child.key,
-                child.val().title,
-                type,
-                child.val().imgURL,
-              )
-            );
-        });
-
-        let newMetadata = new CategoryMetadata(s.key, type, recipes);
-        metadata.push(newMetadata);
+          let newMetadata = new CategoryMetadata(
+            s.key,
+            s.val().title,
+            type,
+            recipes
+          );
+          metadata.push(newMetadata);
+        }
       }
     }
   });
-  console.log(metadata)
+  console.log(metadata);
   setMetadata(metadata);
   setLoading(false);
 };
 
+const updateMetadata = async (recipe: RecipeInfo, path: string) => {
+  if (recipe.category) {
+    const snapshot = await get(child(metadataRef, path));
+    if (!snapshot.exists())
+      set(child(metadataRef, path), {
+        title: recipe.category,
+      });
+  }
+  set(child(metadataRef, `${path}/${recipe.id}`), {
+    title: recipe.title,
+    imgURL: recipe.imgURL,
+  });
+  console.log("updated metadata: " + path);
+};
+
+// --------------------------------------------------------------------------
+// ---------------------------------CATEGORY---------------------------------
+// --------------------------------------------------------------------------
 const fetchCategories = async (
   type: RecipeType,
   setCategories: (m: string[]) => void,
@@ -85,8 +116,8 @@ const fetchCategories = async (
   if (snapshot.exists()) {
     snapshot.forEach((s) => {
       if (s.key !== null) {
-        if (s.val().title === undefined) {
-          categories.push(s.key);
+        if (s.val().imgURL === undefined) {
+          categories.push(s.val().title);
         }
       }
     });
@@ -98,6 +129,9 @@ const fetchCategories = async (
   }
 };
 
+// --------------------------------------------------------------------------
+// ----------------------------------RECIPE----------------------------------
+// --------------------------------------------------------------------------
 const fetchRecipe = async (
   id: string,
   type: RecipeType,
@@ -112,7 +146,6 @@ const fetchRecipe = async (
 
   if (snapshot.exists()) {
     setRecipe(snapshot.val());
-    console.log(snapshot.val())
     setLoading(false);
   } else {
     setError("fetch recipe: no data available");
@@ -120,25 +153,16 @@ const fetchRecipe = async (
 };
 
 const storeRecipe = (recipe: RecipeInfo) => {
-  // const marshalledRecipe = marshallRecipe(recipe);
-  // const path =
-  //   recipe.category === undefined
-  //     ? `${recipe.type}/${recipe.id}`
-  //     : `${recipe.type}/${recipe.category}/${recipe.id}`;
-  // set(ref(db, path), {
-  //   ...marshalledRecipe
-  // });
-  // console.log('stored recipe: ' + path);
-  // updateMetadata(marshalledRecipe, path);
-};
-
-const updateMetadata = (recipe: any, path: string) => {
-  set(child(metadataRef, path), {
-    title: recipe.title,
-    imgURL: recipe.imgURL,
+  const marshalledRecipe = marshallRecipe(recipe);
+  const path =
+    recipe.category === undefined
+      ? `${recipe.type}`
+      : `${recipe.type}/${createId(recipe.category)}`;
+  set(ref(db, `${path}/${recipe.id}`), {
+    ...marshalledRecipe,
   });
 
-  console.log("updated metadata: " + path);
+  updateMetadata(marshalledRecipe, path);
 };
 
 const updateRecipe = (
@@ -152,12 +176,12 @@ const updateRecipe = (
   const path =
     recipe.category === undefined
       ? `${recipe.type}/${recipe.id}`
-      : `${recipe.type}/${recipe.category}/${recipe.id}`;
+      : `${recipe.type}/${createId(recipe.category)}/${recipe.id}`;
 
   const oldPath =
     oldCategory === undefined
       ? `${oldType}/${oldRecipeID}`
-      : `${oldType}/${oldCategory}/${oldRecipeID}`;
+      : `${oldType}/${createId(oldCategory)}/${oldRecipeID}`;
 
   if (path !== oldPath) {
     // Remove old path
@@ -170,7 +194,7 @@ const deleteRecipe = (recipe: RecipeInfo) => {
   const path =
     recipe.category === undefined
       ? `${recipe.type}/${recipe.id}`
-      : `${recipe.type}/${recipe.category}/${recipe.id}`;
+      : `${recipe.type}/${createId(recipe.category)}/${recipe.id}`;
   remove(ref(db, path));
   remove(child(metadataRef, path));
 };
@@ -179,7 +203,7 @@ const isOverWritingRecipe = async (recipe: RecipeInfo): Promise<boolean> => {
   const path =
     recipe.category === undefined
       ? `${recipe.type}/${recipe.id}`
-      : `${recipe.type}/${recipe.category}/${recipe.id}`;
+      : `${recipe.type}/${createId(recipe.category)}/${recipe.id}`;
 
   const snapshot = await get(child(metadataRef, path));
 

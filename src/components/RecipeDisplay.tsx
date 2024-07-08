@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   Divider,
-  CircularProgress,
   Grid,
 } from "@mui/material";
 import { theme } from "../styles/theme";

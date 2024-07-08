@@ -1,68 +1,82 @@
 import {
+  deleteObject,
+  getBlob,
   getDownloadURL,
   getStorage,
   list,
+  listAll,
   ref,
   StorageReference,
   uploadBytesResumable,
-  UploadTask
-} from 'firebase/storage';
-import { app } from './firebase';
-import { RecipeInfo } from '../types/recipe';
+  UploadTask,
+} from "firebase/storage";
+import { app } from "./firebase";
+import { RecipeInfo } from "../types/recipe";
 
-// const storage = getStorage(app);
+const storage = getStorage(app);
 
-// const uploadImage = (
-//   img: any,
-//   recipe: RecipeInfo,
-//   setRecipe: (recipe: RecipeInfo) => void,
-//   setUploading: (u: boolean | null) => void,
-//   // flashContext: FlashState | undefined
-// ) => {
-//   if (!img) {
-//     // flashContext?.addMessage('Please choose an image first', FlashLevel.Warning);
-//     setUploading(null);
-//     return;
-//   }
+const uploadImage = (
+  img: any,
+  recipe: RecipeInfo,
+  onComplete: (url: string) => void
+) => {
+  console.log("uploading image in " + `${recipe.type}/${recipe.id}`);
+  const uploadTask: UploadTask = uploadBytesResumable(
+    ref(storage, `${recipe.type}/${recipe.id}`),
+    img
+  );
 
-//   const uploadTask: UploadTask = uploadBytesResumable(
-//     ref(storage, `${recipe.type}/${recipe.id}`),
-//     img
-//   );
+  return uploadTask.on(
+    "state_changed",
+    () => {},
+    (err) => console.log(err),
+    async () => {
+      const url = await getDownloadURL(uploadTask.snapshot.ref);
+      console.log(url);
+      onComplete(url);
+    }
+  );
+};
 
-//   uploadTask.on(
-//     'state_changed',
-//     () => {},
-//     (err) => console.log(err),
-//     async () => {
-//       const url = await getDownloadURL(uploadTask.snapshot.ref);
-//       console.log(url);
-//       const newRecipe = { ...recipe, imgURL: url };
-//       setRecipe(newRecipe);
-//       setUploading(false);
-//     }
-//   );
-// };
+const downloadImage = (imgURL: string) => {
+  return getBlob(ref(storage, imgURL));
+};
 
-// const isOverWritingData = async (recipe: RecipeInfo): Promise<boolean> => {
-//   const path = `${recipe.type}/${recipe.id}`;
+const deleteImage = (
+  imgURL: string,
+  onComplete: () => void,
+  onError: () => void
+) => {
+  // Delete the file
+  deleteObject(ref(storage, imgURL))
+    .then(() => {
+      console.log("deleted " + imgURL);
+      onComplete();
+    })
+    .catch((err) => {
+      console.log(err);
+      onError();
+    });
+};
 
-//   // Fetch the first page of 100.
-//   const page = await list(ref(storage, path), { maxResults: 100 });
+const isOverWritingData = async (recipe: RecipeInfo): Promise<boolean> => {
+  // Find all the prefixes and items.
+  listAll(ref(storage, `${recipe.type}`))
+    .then((res) => {
+      res.items.forEach((r: StorageReference) => { 
+        // All the items under listRef.
+        console.log(r.name);
+        if (r.name === recipe.id + ".png" || r.name === recipe.id + ".jpg") {
+          return true;
+        }
+      });
+    })
+    .catch((err) => {
+      // Uh-oh, an error occurred!
+      console.log(err)
+    });
 
-//   page.items.forEach((r: StorageReference) => {
-//     console.log(r.name);
-//     if (r.name === recipe.id + '.png' || r.name === recipe.id + '.jpg') {
-//       return true;
-//     }
-//   });
+  return false;
+};
 
-//   // Fetch the second page if there are more elements.
-//   if (page.nextPageToken) {
-//     return isOverWritingData(recipe);
-//   }
-
-//   return false;
-// };
-
-// export { storage, uploadImage, isOverWritingData };
+export { storage, uploadImage, downloadImage, deleteImage, isOverWritingData };

@@ -1,68 +1,36 @@
 import { Stack, Box, useMediaQuery, useTheme, Tab, Tabs } from "@mui/material";
 import { FC, useEffect, useState } from "react";
-import {
-  RecipeInfo,
-  RecipeType,
-  TimeType,
-  YieldType,
-  emptyRecipe,
-} from "../../types/recipe";
-import { useParams } from "react-router-dom";
+import { RecipeInfo } from "../../types/recipe";
 import RecipeDisplay from "../../components/RecipeDisplay";
 import preview from "../../assets/espresso_cookies.jpg";
-import { dummy } from "../../components/dummies";
 import RecipeActions from "./forms/RecipeActions";
 import RecipeAccordion from "./forms/RecipeAccordion";
 import { DefaultTabPanelProps, TabPanel } from "../../components/TabPanel";
+import { initChecks } from "../../util/inputValidation";
 
-const RecipeForm: FC = () => {
-  const { type, category, recipeID } = useParams();
-  const [recipe, setRecipe] = useState<RecipeInfo>(emptyRecipe);
-  const [image, setImage] = useState<Blob | MediaSource>();
-  const isEditMode = type !== undefined && recipeID !== undefined;
-  const newYield: YieldType = { quantity: 0, piece: "people" };
-  const newTime: TimeType = { time: 0, unit: "min" };
-  const newRecipe: RecipeInfo = {
-    id: "",
-    title: "Recipe title",
-    ingredients: [],
-    preparation: [],
-    yield: newYield,
-    preparationTime: newTime,
-    ovenTemperature: undefined,
-    quote: undefined,
-    type: RecipeType.Desserts,
-    source: undefined,
-    imgURL: "",
-    category: undefined,
-    language: undefined,
-  };
+const RecipeForm: FC<{ initState: RecipeInfo; isEditMode?: boolean }> = ({
+  initState,
+  isEditMode = false,
+}) => {
+  const [recipe, setRecipe] = useState<RecipeInfo>(initState);
+  const [image, setImage] = useState<Blob | MediaSource | undefined>(undefined);
+  const [invalidInputs, setInvalidInputs] = useState<Map<string, string>>(
+    new Map(initChecks())
+  );
+
   const theme = useTheme();
   const md = useMediaQuery(theme.breakpoints.up("md"));
 
-  useEffect(() => {
-    if (isEditMode) {
-      //fetch recipe
-      setRecipe(dummy);
-    } else {
-      setRecipe(newRecipe);
-    }
-  }, []);
-
-  useEffect(() => {
-    console.log(recipe);
-  }, [recipe]);
-
   const [value, setValue] = useState(0);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
   return (
     <>
       {!md && (
-        <Box sx={{ width: "100%"}}>
+        <Box sx={{ width: "100%" }}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tabs
               value={value}
@@ -79,12 +47,16 @@ const RecipeForm: FC = () => {
                 recipe={recipe}
                 setRecipe={setRecipe}
                 setImage={setImage}
+                invalidInputs={invalidInputs}
+                setInvalidInputs={setInvalidInputs}
               />
               <RecipeActions
                 recipe={recipe}
                 setRecipe={setRecipe}
                 image={image}
                 isEditMode={isEditMode}
+                invalidInputs={invalidInputs}
+                setInvalidInputs={setInvalidInputs}
               />
             </>
           </TabPanel>
@@ -110,12 +82,16 @@ const RecipeForm: FC = () => {
               recipe={recipe}
               setRecipe={setRecipe}
               setImage={setImage}
+              invalidInputs={invalidInputs}
+              setInvalidInputs={setInvalidInputs}
             />
             <RecipeActions
               recipe={recipe}
               setRecipe={setRecipe}
               image={image}
               isEditMode={isEditMode}
+              invalidInputs={invalidInputs}
+              setInvalidInputs={setInvalidInputs}
             />
           </Box>
           <Box width="50%">

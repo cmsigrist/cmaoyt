@@ -1,4 +1,5 @@
 import { RecipeType } from './types/recipe';
+import { createId } from './util/marshal';
 
 export const ROUTE_HOME = '/';
 export const ROUTE_REGISTER = '/register';
@@ -9,15 +10,22 @@ export const ROUTE_FORBIDDEN = '/403';
 
 export const ROUTE_RECIPE = (
   type: RecipeType,
-  recipeID: string,
-  category?: string
+  recipeId: string,
+  categoryId?: string
 ) =>
-  category === undefined
-    ? `/${type}/${recipeID}`
-    : `/${type}/category/${category}/${recipeID}`;
-export const ROUTE_CATEGORY = (type: RecipeType, category: string) =>
-  `/${type}/category/${category}`;
+  categoryId === undefined
+    ? `/${type}/${recipeId}`
+    : `/${type}/category/${categoryId}/${recipeId}`;
+export const ROUTE_CATEGORY = (type: RecipeType, categoryId: string) =>
+  `/${type}/category/${categoryId}`;
 
+export const ROUTE_PAGE = (type: RecipeType) => {
+  switch(type) {
+    case RecipeType.Desserts: return ROUTE_DESSERTS
+    case RecipeType.Meals: return ROUTE_MEALS
+    case RecipeType.Drinks: return ROUTE_DRINKS
+  }
+}
 export const ROUTE_DESSERTS = `/${RecipeType.Desserts}`;
 export const ROUTE_MEALS = `/${RecipeType.Meals}`;
 export const ROUTE_DRINKS = `/${RecipeType.Drinks}`;
@@ -25,9 +33,9 @@ export const ROUTE_DRINKS = `/${RecipeType.Drinks}`;
 export const ROUTE_RECIPE_NEW = '/recipe/new/';
 export const ROUTE_EDIT_RECIPE = (
   type: RecipeType,
-  recipeID: string,
+  recipeId: string,
   category?: string
 ) =>
   category === undefined
-    ? `/edit/${type}/${recipeID}`
-    : `/edit/${type}/category/${category}/${recipeID}`;
+    ? `/edit/${type}/${recipeId}`
+    : `/edit/${type}/category/${createId(category)}/${recipeId}`;

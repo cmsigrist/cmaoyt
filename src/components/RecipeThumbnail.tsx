@@ -10,28 +10,34 @@ import {
 } from "@mui/material";
 import { ROUTE_CATEGORY, ROUTE_RECIPE } from "../routes";
 import { Link } from "react-router-dom";
-// import dummy from '../assets/espresso_cookies.jpg';
 
-const RecipeThumbnail: FC<{ metadata: Metadata }> = ({ metadata }) => {
+const RecipeThumbnail: FC<{ metadata: Metadata; categoryId?: string }> = ({
+  metadata,
+  categoryId,
+}) => {
   const isCategory = metadata instanceof CategoryMetadata;
   const route = isCategory
     ? ROUTE_CATEGORY(
         metadata.type,
-        (metadata as CategoryMetadata).getTitle.toLowerCase().replace(" ", "_")
+        metadata.id
       )
-    : ROUTE_RECIPE(metadata.type, (metadata as RecipeMetadata).id);
+    : ROUTE_RECIPE(
+        metadata.type,
+        metadata.id,
+        categoryId
+      );
 
   const img = () => {
     if (isCategory) {
       const categoryMetadata = metadata as CategoryMetadata;
-      const recipes = categoryMetadata.getRecipes;
+      const recipes = categoryMetadata.recipes;
 
       if (recipes.length === 1) {
         return (
           <CardMedia
             component="img"
             image={recipes[0].imgURL}
-            alt={categoryMetadata.getTitle}
+            alt={categoryMetadata.title}
           />
         );
       }
@@ -75,8 +81,8 @@ const RecipeThumbnail: FC<{ metadata: Metadata }> = ({ metadata }) => {
       return (
         <CardMedia
           component="img"
-          image={(metadata as RecipeMetadata).getImgURL}
-          alt={(metadata as RecipeMetadata).getTitle}
+          image={(metadata as RecipeMetadata).imgURL}
+          alt={(metadata as RecipeMetadata).title}
           sx={{ height: "100%", width: "100%" }}
         />
       );
@@ -112,11 +118,11 @@ const RecipeThumbnail: FC<{ metadata: Metadata }> = ({ metadata }) => {
       <Link to={route} style={{ textDecoration: "none", flexGrow: 0 }}>
         <Typography variant="body1" color={"black"} textAlign={"center"}>
           {isCategory
-            ? metadata.getTitle
+            ? metadata.title
                 .split("_")
                 .map((w) => w[0].toUpperCase() + w.substring(1))
                 .join(" ")
-            : metadata.getTitle}
+            : metadata.title}
         </Typography>
       </Link>
     </Stack>

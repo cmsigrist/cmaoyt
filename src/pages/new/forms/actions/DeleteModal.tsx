@@ -1,4 +1,6 @@
-import { LoadingButton } from "@mui/lab";
+// React
+import { FC } from "react";
+// MUI
 import {
   Button,
   Dialog,
@@ -7,7 +9,12 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import { FC } from "react";
+import { LoadingButton } from "@mui/lab";
+// Components
+// Hooks
+// Utils
+// Types
+// Icons
 import DeleteIcon from "@mui/icons-material/Delete";
 
 type DeleteModalProps = {

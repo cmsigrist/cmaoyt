@@ -1,7 +1,24 @@
+// React
+import { Suspense } from "react";
+// MUI
+import { Container, Stack } from "@mui/material";
+// Components
+import ResponsiveAppBar from "./ResponsiveAppBar";
+import Home from "../pages/Home";
+import Desserts from "../pages/Desserts";
+import Meals from "../pages/Meals";
+import Drinks from "../pages/Drinks";
+import Footer from "./Footer";
+import Category from "../pages/Category";
+import Recipe from "../pages/Recipe";
+import RecipeNew from "../pages/RecipeNew";
+import RecipeEdit from "../pages/RecipeEdit";
+import ClientError from "../pages/ClientError";
+import Flash from "../components/Flash";
+// Hooks
+// Utils
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { Suspense } from "react";
-import ResponsiveAppBar from "./ResponsiveAppBar";
 import {
   ROUTE_DESSERTS,
   ROUTE_DRINKS,
@@ -10,18 +27,8 @@ import {
   ROUTE_MEALS,
   ROUTE_RECIPE_NEW,
 } from "../routes";
-import Home from "../pages/Home";
-import Desserts from "../pages/Desserts";
-import Meals from "../pages/Meals";
-import Drinks from "../pages/Drinks";
-import { Container, Stack } from "@mui/material";
-import Footer from "./Footer";
-import Category from "../pages/Category";
-import Recipe from "../pages/Recipe";
-import RecipeNew from "../pages/RecipeNew";
-import RecipeEdit from "../pages/RecipeEdit";
-import ClientError from "../pages/ClientError";
-import Flash from "../components/Flash";
+// Types
+// Icons
 
 function App() {
   // const DBUser = useContext(DBUserContext);

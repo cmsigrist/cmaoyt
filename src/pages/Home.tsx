@@ -1,7 +1,13 @@
-import { FC, useState } from "react";
+// React
+import { FC } from "react";
+// MUI
+import { Stack } from "@mui/material";
+// Components
+// Hooks
+// Utils
 import logo from "../assets/logo.png";
-import { Box, Button, Stack, Typography } from "@mui/material";
-import { RecipeInfo } from "../types/recipe";
+// Types
+// Icons
 
 const Home: FC = () => {
   return (

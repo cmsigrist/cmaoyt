@@ -1,5 +1,7 @@
+// React
 import { FC } from "react";
-import { CategoryMetadata, Metadata, RecipeMetadata } from "../types/recipe";
+import { Link } from "react-router-dom";
+// MUI
 import {
   Card,
   CardActionArea,
@@ -8,8 +10,13 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+// Components
+// Hooks
+// Utils
 import { ROUTE_CATEGORY, ROUTE_RECIPE } from "../routes";
-import { Link } from "react-router-dom";
+// Types
+import { CategoryMetadata, Metadata, RecipeMetadata } from "../types/recipe";
+// Icons
 
 const RecipeThumbnail: FC<{ metadata: Metadata; categoryId?: string }> = ({
   metadata,

@@ -1,14 +1,33 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+// React
 import { FC } from "react";
+// MUI
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+// Components
+// Hooks
+// Utils
+// Types
+// Icons
 
 type RecipeActionModalProps = {
-  open: boolean
-  handleClose: (close: boolean) => void
-  handleCancel: () => void
-  handleProceed: () => void
-}
+  open: boolean;
+  handleClose: (close: boolean) => void;
+  handleCancel: () => void;
+  handleProceed: () => void;
+};
 
-const RecipeActionModal: FC<RecipeActionModalProps> = ({open, handleClose, handleCancel, handleProceed}) => {
+const RecipeActionModal: FC<RecipeActionModalProps> = ({
+  open,
+  handleClose,
+  handleCancel,
+  handleProceed,
+}) => {
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle id="alert-dialog-title">
@@ -16,7 +35,8 @@ const RecipeActionModal: FC<RecipeActionModalProps> = ({open, handleClose, handl
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          A recipe with the same name already exist, are you sure you want to overwrite it?
+          A recipe with the same name already exist, are you sure you want to
+          overwrite it?
         </DialogContentText>
       </DialogContent>
       <DialogActions>
@@ -31,4 +51,4 @@ const RecipeActionModal: FC<RecipeActionModalProps> = ({open, handleClose, handl
   );
 };
 
-export default RecipeActionModal
+export default RecipeActionModal;

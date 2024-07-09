@@ -1,5 +1,6 @@
+// React
 import { FC } from "react";
-import { RecipeInfo } from "../../../types/recipe";
+// MUI
 import {
   Accordion,
   AccordionSummary,
@@ -7,6 +8,7 @@ import {
   Button,
   useTheme,
 } from "@mui/material";
+// Components
 import RecipeCategory from "./accordion/RecipeCategory";
 import RecipeList from "./accordion/RecipeList";
 import RecipeOven from "./accordion/RecipeOven";
@@ -14,10 +16,15 @@ import RecipeQuote from "./accordion/RecipeQuote";
 import RecipeTime from "./accordion/RecipeTime";
 import RecipeTitle from "./accordion/RecipeTitle";
 import RecipeYield from "./accordion/RecipeYield";
+import { HiddenInput } from "../../../components/HiddenInput";
+// Hooks
+// Utils
+import { createId } from "../../../util/marshal";
+// Types
+import { RecipeInfo } from "../../../types/recipe";
+// Icons
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { HiddenInput } from "../../../components/HiddenInput";
-import { createId } from "../../../util/marshal";
 
 type RecipeAccordionProps = {
   recipe: RecipeInfo;

@@ -1,4 +1,11 @@
+// React
+// MUI
 import { styled } from "@mui/material";
+// Components
+// Hooks
+// Utils
+// Types
+// Icons
 
 export const HiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",

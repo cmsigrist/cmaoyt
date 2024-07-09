@@ -1,5 +1,12 @@
-import { Stack, CircularProgress } from "@mui/material";
+// React
 import { FC } from "react";
+// MUI
+import { Stack, CircularProgress } from "@mui/material";
+// Components
+// Hooks
+// Utils
+// Types
+// Icons
 
 const Loading: FC<{ fullHeight?: boolean }> = ({ fullHeight }) => {
   return (

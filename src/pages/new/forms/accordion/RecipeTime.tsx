@@ -1,5 +1,6 @@
+// React
 import { FC } from "react";
-import { TimeType } from "../../../../types/recipe";
+// MUI
 import {
   Stack,
   TextField,
@@ -8,6 +9,12 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+// Components
+// Hooks
+// Utils
+// Types
+import { TimeType } from "../../../../types/recipe";
+// Icons
 
 type RecipeTimeProps = {
   recipeTime: TimeType;

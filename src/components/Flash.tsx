@@ -1,7 +1,14 @@
-import { Alert, Box, IconButton, Slide } from "@mui/material";
+// React
 import { FC, useContext } from "react";
-import CloseIcon from "@mui/icons-material/Close";
+// MUI
+import { Alert, Box, IconButton, Slide } from "@mui/material";
+// Components
+// Hooks
+// Utils
 import { FlashContext } from "..";
+// Types
+// Icons
+import CloseIcon from "@mui/icons-material/Close";
 
 const Flash: FC = () => {
   const flashContext = useContext(FlashContext);

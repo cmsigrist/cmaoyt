@@ -1,4 +1,11 @@
+// React
+// MUI
 import { Box } from "@mui/material";
+// Components
+// Hooks
+// Utils
+// Types
+// Icons
 
 interface TabPanelProps {
   children?: React.ReactNode;

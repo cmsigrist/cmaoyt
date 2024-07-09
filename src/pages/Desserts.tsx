@@ -1,8 +1,15 @@
+// React
 import { FC } from 'react';
-import { RecipeType } from '../types/recipe';
-import { Box, Typography, useTheme } from '@mui/material';
+// MUI
+import { Box, useTheme } from '@mui/material';
+// Components
 import RecipeGrid from '../components/RecipeGrid';
+// Hooks
+// Utils
 import { width } from '../styles/theme';
+// Types
+import { RecipeType } from '../types/recipe';
+// Icons
 
 const Desserts: FC = () => {
   const theme = useTheme();

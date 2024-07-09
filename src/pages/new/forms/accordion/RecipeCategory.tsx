@@ -1,3 +1,6 @@
+// React
+import { FC, useEffect, useState } from "react";
+// MUI
 import {
   FormControl,
   InputLabel,
@@ -9,10 +12,14 @@ import {
   TextField,
   Box,
 } from "@mui/material";
-import { FC, useEffect, useState } from "react";
-import AddIcon from "@mui/icons-material/Add";
+// Components
+// Hooks
+// Utils
 import { fetchCategories } from "../../../../firebase/database";
+// Types
 import { RecipeType } from "../../../../types/recipe";
+// Icons
+import AddIcon from "@mui/icons-material/Add";
 
 type RecipeCategoryProps = {
   category: string | undefined;

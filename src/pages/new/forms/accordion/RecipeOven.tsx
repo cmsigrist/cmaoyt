@@ -1,5 +1,12 @@
-import { Box, Button, Stack, TextField, useTheme } from "@mui/material";
+// React
 import { FC, useEffect, useState } from "react";
+// MUI
+import { Box, Button, Stack, TextField, useTheme } from "@mui/material";
+// Components
+// Hooks
+// Utils
+// Types
+// Icons
 import AddIcon from "@mui/icons-material/Add";
 
 type RecipeOvenProps = {

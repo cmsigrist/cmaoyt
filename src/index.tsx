@@ -1,15 +1,20 @@
-import React, { ReactElement, createContext, useEffect, useRef, useState } from 'react';
+// React
+import React, { createContext, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './layout/App';
-import reportWebVitals from './reportWebVitals';
+// MUI
 import { ThemeProvider } from '@mui/material';
+// Components
+import App from './layout/App';
+// Hooks
+// import { useAuthState } from 'react-firebase-hooks/auth';
+// Utils
+import './index.css';
+import reportWebVitals from './reportWebVitals';
 import { theme } from './styles/theme';
+// Types
 import { DBUser } from './types/user';
 import { FlashMessage, FlashSeverity, FlashState, flashTimeout } from './types/flash';
-import Loading from './components/Loading';
-// import { useAuthState } from 'react-firebase-hooks/auth';
-
+// Icons
 
 const defaultDBUser: DBUser = { isLogged: false, name: '', role: '' };
 

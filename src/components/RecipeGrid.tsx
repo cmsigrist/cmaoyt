@@ -1,9 +1,16 @@
+// React
 import { FC, useEffect, useState } from "react";
-import { Metadata, RecipeType } from "../types/recipe";
-import RecipeThumbnail from "./RecipeThumbnail";
+// MUI
 import { Grid, Typography, useTheme } from "@mui/material";
-import { fetchAllMetadata } from "../firebase/database";
+// Components
+import RecipeThumbnail from "./RecipeThumbnail";
 import Loading from "./Loading";
+// Hooks
+// Utils
+import { fetchAllMetadata } from "../firebase/database";
+// Types
+import { Metadata, RecipeType } from "../types/recipe";
+// Icons
 
 const RecipeGrid: FC<{ type: RecipeType; categoryId?: string }> = ({
   type,

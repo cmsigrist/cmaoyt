@@ -1,5 +1,6 @@
-import { FC, useEffect, useState } from "react";
-import { YieldType } from "../../../../types/recipe";
+// React
+import { FC } from "react";
+// MUI
 import {
   Stack,
   Typography,
@@ -8,11 +9,16 @@ import {
   InputBase,
   FormControl,
   FormControlLabel,
-  FormLabel,
   Radio,
   RadioGroup,
   TextField,
 } from "@mui/material";
+// Components
+// Hooks
+// Utils
+// Types
+import { YieldType } from "../../../../types/recipe";
+// Icons
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 

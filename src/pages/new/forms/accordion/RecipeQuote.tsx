@@ -1,7 +1,14 @@
-import { Box, Button, Stack, TextField, useTheme } from "@mui/material";
+// React
 import { FC, useEffect, useState } from "react";
-import AddIcon from "@mui/icons-material/Add";
+// MUI
+import { Box, Button, Stack, TextField, useTheme } from "@mui/material";
+// Components
+// Hooks
+// Utils
+// Types
 import { QuoteType } from "../../../../types/recipe";
+// Icons
+import AddIcon from "@mui/icons-material/Add";
 
 type RecipeQuoteProps = {
   quote: QuoteType | undefined;

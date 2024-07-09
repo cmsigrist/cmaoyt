@@ -1,12 +1,15 @@
+// React
 import { FC, useContext, useState } from "react";
-import { RecipeInfo, RecipeType, newRecipe } from "../../../types/recipe";
+// MUI
 import { Button, Stack } from "@mui/material";
-import DownloadIcon from "@mui/icons-material/Download";
-import UploadIcon from "@mui/icons-material/Upload";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { createId, marshallRecipe } from "../../../util/marshal";
+import { LoadingButton } from "@mui/lab";
+// Components
 import { HiddenInput } from "../../../components/HiddenInput";
+import RecipeActionModal from "./actions/RecipeActionsModal";
+// Hooks
+import { useNavigate, useParams } from "react-router-dom";
+// Utils
+import { createId, marshallRecipe } from "../../../util/marshal";
 import {
   deleteImage,
   downloadImage,
@@ -22,14 +25,18 @@ import {
   storeRecipe,
   updateRecipe,
 } from "../../../firebase/database";
-import RecipeActionModal from "./actions/RecipeActionsModal";
-import { LoadingButton } from "@mui/lab";
-import { ROUTE_PAGE, ROUTE_RECIPE } from "../../../routes";
-import { useNavigate, useParams } from "react-router-dom";
-import DeleteModal from "./actions/DeleteModal";
-import CheckIcon from "@mui/icons-material/Check";
 import { FlashContext } from "../../..";
 import { FlashSeverity } from "../../../types/flash";
+import { ROUTE_PAGE, ROUTE_RECIPE } from "../../../routes";
+// Types
+import { RecipeInfo, RecipeType, newRecipe } from "../../../types/recipe";
+// Icons
+import DownloadIcon from "@mui/icons-material/Download";
+import UploadIcon from "@mui/icons-material/Upload";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteModal from "./actions/DeleteModal";
+import CheckIcon from "@mui/icons-material/Check";
 
 type RecipeActionProps = {
   recipe: RecipeInfo;
@@ -76,7 +83,10 @@ const RecipeActions: FC<RecipeActionProps> = ({
     if (!isEmpty(inputs)) {
       console.log("invalid inputs");
       console.log(invalidInputs);
-      flashContext?.addMessage('Error: some fields were not correctly completed', FlashSeverity.Error);
+      flashContext?.addMessage(
+        "Error: some fields were not correctly completed",
+        FlashSeverity.Error
+      );
       setLoading(undefined);
       return false;
     }
@@ -121,7 +131,10 @@ const RecipeActions: FC<RecipeActionProps> = ({
       return;
     }
     if (image === undefined) {
-      flashContext?.addMessage('Please choose an image first', FlashSeverity.Warning);
+      flashContext?.addMessage(
+        "Please choose an image first",
+        FlashSeverity.Warning
+      );
       setUploading(undefined);
       return;
     }
@@ -136,11 +149,17 @@ const RecipeActions: FC<RecipeActionProps> = ({
     if (isEditMode && recipeId !== undefined) {
       console.log("updating recipe");
       updateRecipe(recipeWithImgURL, type as RecipeType, recipeId, categoryId);
-      flashContext?.addMessage("Recipe successfully updated", FlashSeverity.Success);
+      flashContext?.addMessage(
+        "Recipe successfully updated",
+        FlashSeverity.Success
+      );
     } else {
       console.log("storing recipe");
       storeRecipe(recipeWithImgURL);
-      flashContext?.addMessage("Recipe successfully created", FlashSeverity.Success);
+      flashContext?.addMessage(
+        "Recipe successfully created",
+        FlashSeverity.Success
+      );
     }
 
     setUploading(false);

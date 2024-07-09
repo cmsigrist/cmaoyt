@@ -1,5 +1,7 @@
+// React
 import { FC } from "react";
-import { RecipeInfo } from "../types/recipe";
+import { Link } from "react-router-dom";
+// MUI
 import {
   Typography,
   Stack,
@@ -8,11 +10,16 @@ import {
   Divider,
   Grid,
 } from "@mui/material";
-import { theme } from "../styles/theme";
-import EditIcon from "@mui/icons-material/Edit";
-import { ROUTE_EDIT_RECIPE } from "../routes";
-import { Link } from "react-router-dom";
+// Components
 import Loading from "./Loading";
+// Hooks
+// Utils
+import { theme } from "../styles/theme";
+import { ROUTE_EDIT_RECIPE } from "../routes";
+// Types
+import { RecipeInfo } from "../types/recipe";
+// Icons
+import EditIcon from "@mui/icons-material/Edit";
 
 type RecipeDisplayProps = {
   recipe?: RecipeInfo;

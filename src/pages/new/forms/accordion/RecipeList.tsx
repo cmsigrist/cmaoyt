@@ -1,6 +1,13 @@
-import { Stack, TextField, IconButton, Button, Box } from "@mui/material";
+// React
 import { FC } from "react";
+// MUI
+import { Stack, TextField, IconButton, Button, Box } from "@mui/material";
+// Components
+// Hooks
+// Utils
 import { theme } from "../../../../styles/theme";
+// Types
+// Icons
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 

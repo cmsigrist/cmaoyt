@@ -1,11 +1,18 @@
-import { Box, Typography, useTheme } from "@mui/material";
+// React
 import { FC, useEffect, useState } from "react";
+// MUI
+import { Box, Typography, useTheme } from "@mui/material";
+// Components
 import RecipeForm from "./new/RecipeForm";
-import { width } from "../styles/theme";
-import { useParams } from "react-router-dom";
-import { fetchRecipe } from "../firebase/database";
-import { RecipeInfo, RecipeType } from "../types/recipe";
 import Loading from "../components/Loading";
+// Hooks
+import { useParams } from "react-router-dom";
+// Utils
+import { width } from "../styles/theme";
+import { fetchRecipe } from "../firebase/database";
+// Types
+import { RecipeInfo, RecipeType } from "../types/recipe";
+// Icons
 
 const RecipeEdit: FC = () => {
   const { type, categoryId, recipeId } = useParams();
@@ -13,7 +20,7 @@ const RecipeEdit: FC = () => {
   const [_, setLoading] = useState(true);
   const [error, setError] = useState("");
   const theme = useTheme();
-  
+
   useEffect(() => {
     if (recipeId !== undefined && type !== undefined) {
       fetchRecipe(

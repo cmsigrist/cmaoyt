@@ -1,3 +1,6 @@
+// React
+import { FC } from "react";
+// MUI
 import {
   Box,
   Button,
@@ -6,8 +9,12 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { FC } from "react";
+// Components
+// Hooks
+// Utils
 import { width } from "../styles/theme";
+// Types
+// Icons
 
 const ClientError: FC<{
   statusCode: number;

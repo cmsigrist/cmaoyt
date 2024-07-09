@@ -1,12 +1,19 @@
+// React
+import { FC, useState } from "react";
+// MUI
 import { Stack, Box, useMediaQuery, useTheme, Tab, Tabs } from "@mui/material";
-import { FC, useEffect, useState } from "react";
-import { RecipeInfo } from "../../types/recipe";
+// Components
 import RecipeDisplay from "../../components/RecipeDisplay";
-import preview from "../../assets/espresso_cookies.jpg";
 import RecipeActions from "./forms/RecipeActions";
 import RecipeAccordion from "./forms/RecipeAccordion";
 import { DefaultTabPanelProps, TabPanel } from "../../components/TabPanel";
+// Hooks
+// Utils
+import preview from "../../assets/espresso_cookies.jpg";
 import { initChecks } from "../../util/inputValidation";
+// Types
+import { RecipeInfo } from "../../types/recipe";
+// Icons
 
 const RecipeForm: FC<{ initState: RecipeInfo; isEditMode?: boolean }> = ({
   initState,

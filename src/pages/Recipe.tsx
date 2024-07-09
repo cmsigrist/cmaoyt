@@ -1,11 +1,18 @@
+// React
 import { FC, useEffect, useState } from "react";
-import { RecipeInfo, RecipeType } from "../types/recipe";
-import { useParams } from "react-router-dom";
-
+// MUI
 import { Box } from "@mui/material";
+// Components
 import RecipeDisplay from "../components/RecipeDisplay";
-import { width } from "../styles/theme";
+// Hooks
+import { useParams } from "react-router-dom";
+// Utils
 import { fetchRecipe } from "../firebase/database";
+import { width } from "../styles/theme";
+// Types
+import { RecipeInfo, RecipeType } from "../types/recipe";
+// Icons
+
 
 const Recipe: FC = () => {
   const { type, categoryId, recipeId } = useParams();

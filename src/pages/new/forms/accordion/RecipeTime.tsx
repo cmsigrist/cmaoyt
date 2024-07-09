@@ -19,9 +19,10 @@ import { TimeType } from "../../../../types/recipe";
 type RecipeTimeProps = {
   recipeTime: TimeType;
   handleUpdate: (time: TimeType) => void;
+  invalidInput?: string
 };
 
-const RecipeTime: FC<RecipeTimeProps> = ({ recipeTime, handleUpdate }) => {
+const RecipeTime: FC<RecipeTimeProps> = ({ recipeTime, handleUpdate, invalidInput }) => {
   return (
     <Stack direction="row" spacing={1}>
       <TextField
@@ -31,6 +32,8 @@ const RecipeTime: FC<RecipeTimeProps> = ({ recipeTime, handleUpdate }) => {
         onChange={(event) =>
           handleUpdate({ ...recipeTime, time: Number.parseInt(event.target.value) })
         }
+        error={invalidInput !== undefined && invalidInput !== ""}
+        helperText={invalidInput}
       />
       <FormControl fullWidth sx={{ maxWidth: "30%" }}>
         <InputLabel id="demo-simple-select-label">Unit</InputLabel>

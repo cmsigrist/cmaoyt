@@ -20,8 +20,14 @@ type RecipeTitleProps = {
   title: string;
   type?: RecipeType;
   handleUpdate: (title: string, action: string) => void;
+  invalidInput?: string;
 };
-const RecipeTitle: FC<RecipeTitleProps> = ({ title, type, handleUpdate }) => {
+const RecipeTitle: FC<RecipeTitleProps> = ({
+  title,
+  type,
+  handleUpdate,
+  invalidInput,
+}) => {
   return (
     <Stack direction={"row"} spacing={1}>
       <TextField
@@ -32,6 +38,8 @@ const RecipeTitle: FC<RecipeTitleProps> = ({ title, type, handleUpdate }) => {
         size="small"
         value={title}
         onChange={(event) => handleUpdate(event.target.value, "title")}
+        error={invalidInput !== undefined && invalidInput !== ""}
+        helperText={invalidInput}
       />
       <FormControl fullWidth sx={{ maxWidth: "30%" }}>
         <InputLabel id="demo-simple-select-label">Recipe type</InputLabel>

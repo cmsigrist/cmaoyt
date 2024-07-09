@@ -1,94 +1,117 @@
-import { RecipeInfo, TimeType, YieldType, newTime, newYield } from "../types/recipe";
+import {
+  RecipeInfo,
+  TimeType,
+  YieldType,
+  newTime,
+  newYield,
+} from "../types/recipe";
 
-export const isEmpty = (validations: Map<string, string>): boolean => {
-  return Array.from(validations.values()).filter((v) => v !== '').length === 0;
+export type InputValidation =
+  | "title"
+  | "ingredients"
+  | "preparation"
+  | "yield"
+  | "preparationTime";
+
+export const isEmpty = (validations: Map<InputValidation, string>): boolean => {
+  return Array.from(validations.values()).filter((v) => v !== "").length === 0;
 };
 
-export const initChecks = (): Map<string, string> => {
-  const newInvalidInputs = new Map<string, string>();
-  newInvalidInputs.set('title', 'Error: title cannot be empty');
-  newInvalidInputs.set('ingredients', 'Error: ingredients cannot be empty');
-  newInvalidInputs.set('preparation', 'Error: preparation cannot be empty');
-  newInvalidInputs.set('yield', 'Error: yield cannot be empty');
-  newInvalidInputs.set('preparationTime', 'Error: preparation time cannot be empty');
+export const initChecks = (): Map<InputValidation, string> => {
+  const newInvalidInputs = new Map<InputValidation, string>();
+  newInvalidInputs.set("title", "");
+  newInvalidInputs.set("ingredients", "");
+  newInvalidInputs.set("preparation", "");
+  newInvalidInputs.set("yield", "");
+  newInvalidInputs.set("preparationTime", "");
   return newInvalidInputs;
 };
 
 export const checkTitle = (
-  invalidInputs: Map<string, string>,
+  invalidInputs: Map<InputValidation, string>,
   input: string
-): Map<string, string> => {
+): Map<InputValidation, string> => {
   const newInvalidInputs = new Map(invalidInputs);
-  if (input !== '') {
-    newInvalidInputs.set('title', '');
+  if (input !== "") {
+    newInvalidInputs.set("title", "");
   } else {
-    newInvalidInputs.set('title', 'Error: title cannot be empty');
+    newInvalidInputs.set("title", "Error: title cannot be empty");
   }
   return newInvalidInputs;
 };
 
-export const checkIngredients = (
-  invalidInputs: Map<string, string>,
+export const checkList = (
+  key: InputValidation,
+  error: string,
+  invalidInputs: Map<InputValidation, string>,
   input: string[]
-): Map<string, string> => {
+): Map<InputValidation, string> => {
   const newInvalidInputs = new Map(invalidInputs);
-  if (input.length !== 0) {
-    newInvalidInputs.set('ingredients', '');
+  if (input.length !== 0 && input.filter((i) => i === "").length === 0) {
+    newInvalidInputs.set(key, "");
   } else {
-    newInvalidInputs.set('ingredients', 'Error: ingredients cannot be empty');
-  }
-  return newInvalidInputs;
-};
-
-export const checkPreparation = (
-  invalidInputs: Map<string, string>,
-  input: string[]
-): Map<string, string> => {
-  const newInvalidInputs = new Map(invalidInputs);
-  if (input.length !== 0) {
-    newInvalidInputs.set('preparation', '');
-  } else {
-    newInvalidInputs.set('preparation', 'Error: preparation cannot be empty');
+    newInvalidInputs.set(key, error);
   }
   return newInvalidInputs;
 };
 
 export const checkYield = (
-  invalidInputs: Map<string, string>,
+  invalidInputs: Map<InputValidation, string>,
   input: YieldType
-): Map<string, string> => {
+): Map<InputValidation, string> => {
   const newInvalidInputs = new Map(invalidInputs);
-  if (input !== newYield) {
-    newInvalidInputs.set('yield', '');
+  if (input.quantity === 0 && (input.piece === "people" || input.piece !== "")) {
+    newInvalidInputs.set("yield", "Error: yield cannot be empty");
+  } else if(input.quantity === 0 && input.piece === "") {
+    newInvalidInputs.set("yield", "Error: yield quantity and serving cannot be empty");
+  } else if (input.piece === "") {
+    newInvalidInputs.set("yield", "Error: yield serving cannot be empty");
   } else {
-    newInvalidInputs.set('yield', 'Error: yield cannot be empty');
+    newInvalidInputs.set("yield", "");
   }
   return newInvalidInputs;
 };
 
 export const checkPreparationTime = (
-  invalidInputs: Map<string, string>,
+  invalidInputs: Map<InputValidation, string>,
   input: TimeType
-): Map<string, string> => {
+): Map<InputValidation, string> => {
   const newInvalidInputs = new Map(invalidInputs);
   if (input !== newTime) {
-    newInvalidInputs.set('preparationTime', '');
+    newInvalidInputs.set("preparationTime", "");
   } else {
-    newInvalidInputs.set('preparationTime', 'Error: preparation time cannot be empty');
+    newInvalidInputs.set(
+      "preparationTime",
+      "Error: preparation time cannot be empty"
+    );
   }
   return newInvalidInputs;
 };
 
 export const checkAllInputs = (
-  invalidInputs: Map<string, string>,
+  invalidInputs: Map<InputValidation, string>,
   recipe: RecipeInfo
-): Map<string, string> => {
+): Map<InputValidation, string> => {
+  console.log(recipe);
   let newInvalidInputs = new Map(invalidInputs);
   newInvalidInputs = checkTitle(newInvalidInputs, recipe.title);
-  newInvalidInputs = checkIngredients(newInvalidInputs, recipe.ingredients);
-  newInvalidInputs = checkPreparation(newInvalidInputs, recipe.preparation);
+  newInvalidInputs = checkList(
+    "ingredients",
+    "Error: ingredients cannot be empty",
+    newInvalidInputs,
+    recipe.ingredients
+  );
+  newInvalidInputs = checkList(
+    "preparation",
+    "Error: preparation cannot be empty",
+    newInvalidInputs,
+    recipe.preparation
+  );
   newInvalidInputs = checkYield(newInvalidInputs, recipe.yield);
-  newInvalidInputs = checkPreparationTime(newInvalidInputs, recipe.preparationTime);
+  newInvalidInputs = checkPreparationTime(
+    newInvalidInputs,
+    recipe.preparationTime
+  );
 
   return newInvalidInputs;
 };

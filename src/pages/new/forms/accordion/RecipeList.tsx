@@ -15,8 +15,14 @@ type RecipeListProps = {
   list: string[];
   type: "ingredients" | "preparation";
   setRecipe: (list: string[]) => void;
+  invalidInput?: string;
 };
-const RecipeList: FC<RecipeListProps> = ({ list, type, setRecipe }) => {
+const RecipeList: FC<RecipeListProps> = ({
+  list,
+  type,
+  setRecipe,
+  invalidInput,
+}) => {
   const handleUpdate = (
     payload: string,
     index: number,
@@ -53,18 +59,18 @@ const RecipeList: FC<RecipeListProps> = ({ list, type, setRecipe }) => {
 
   return (
     <Stack direction={"column"} spacing={2}>
-      {list.map((ingredient, i) => (
+      {list.map((elem, i) => (
         <Stack key={i} direction={"row"} spacing={1}>
           <TextField
             fullWidth
             id="outlined-required"
             label={type === "ingredients" ? "Ingredient" : "Step"}
-            value={ingredient}
+            value={elem}
             size="small"
             multiline={type === "preparation"}
-            onChange={(event) =>
-              handleUpdate(event.target.value, i, "update")
-            }
+            onChange={(event) => handleUpdate(event.target.value, i, "update")}
+            error={invalidInput !== undefined && invalidInput !== "" && elem === ""}
+            helperText={elem === "" ? invalidInput : ""}
           />
           <Box height={"auto"}>
             <IconButton

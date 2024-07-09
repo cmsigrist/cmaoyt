@@ -10,7 +10,7 @@ import { DefaultTabPanelProps, TabPanel } from "../../components/TabPanel";
 // Hooks
 // Utils
 import preview from "../../assets/espresso_cookies.jpg";
-import { initChecks } from "../../util/inputValidation";
+import { InputValidation, initChecks } from "../../util/inputValidation";
 // Types
 import { RecipeInfo } from "../../types/recipe";
 // Icons
@@ -21,7 +21,7 @@ const RecipeForm: FC<{ initState: RecipeInfo; isEditMode?: boolean }> = ({
 }) => {
   const [recipe, setRecipe] = useState<RecipeInfo>(initState);
   const [image, setImage] = useState<Blob | MediaSource | undefined>(undefined);
-  const [invalidInputs, setInvalidInputs] = useState<Map<string, string>>(
+  const [invalidInputs, setInvalidInputs] = useState<Map<InputValidation, string>>(
     new Map(initChecks())
   );
 

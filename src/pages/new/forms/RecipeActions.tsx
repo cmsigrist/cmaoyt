@@ -18,7 +18,7 @@ import {
 } from "../../../firebase/storage";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import { checkAllInputs, isEmpty } from "../../../util/inputValidation";
+import { InputValidation, checkAllInputs, isEmpty } from "../../../util/inputValidation";
 import {
   deleteRecipe,
   isOverWritingRecipe,
@@ -43,8 +43,8 @@ type RecipeActionProps = {
   setRecipe: (recipe: RecipeInfo) => void;
   image?: Blob | MediaSource;
   isEditMode: boolean;
-  invalidInputs: Map<string, string>;
-  setInvalidInputs: (i: Map<string, string>) => void;
+  invalidInputs: Map<InputValidation, string>;
+  setInvalidInputs: (i: Map<InputValidation, string>) => void;
 };
 
 const RecipeActions: FC<RecipeActionProps> = ({
@@ -68,7 +68,7 @@ const RecipeActions: FC<RecipeActionProps> = ({
   const [open, setOpen] = useState(false);
 
   const isRecipeValid = (setLoading: (b: boolean | undefined) => void) => {
-    if (recipe === newRecipe || recipe.id === "") {
+    if (recipe === newRecipe) {
       flashContext?.addMessage(
         "Error: cannot upload empty recipe",
         FlashSeverity.Error
@@ -82,7 +82,7 @@ const RecipeActions: FC<RecipeActionProps> = ({
     // Some basic input validation
     if (!isEmpty(inputs)) {
       console.log("invalid inputs");
-      console.log(invalidInputs);
+      console.log(inputs);
       flashContext?.addMessage(
         "Error: some fields were not correctly completed",
         FlashSeverity.Error

@@ -22,6 +22,7 @@ import { HiddenInput } from "../../../components/HiddenInput";
 import { createId } from "../../../util/marshal";
 // Types
 import { RecipeInfo } from "../../../types/recipe";
+import { InputValidation } from "../../../util/inputValidation";
 // Icons
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -30,8 +31,8 @@ type RecipeAccordionProps = {
   recipe: RecipeInfo;
   setRecipe: (recipe: RecipeInfo) => void;
   setImage: (image: Blob | MediaSource) => void;
-  invalidInputs: Map<string, string>
-  setInvalidInputs: (i: Map<string, string>) => void
+  invalidInputs: Map<InputValidation, string>;
+  setInvalidInputs: (i: Map<InputValidation, string>) => void;
 };
 
 const RecipeAccordion: FC<RecipeAccordionProps> = ({
@@ -39,7 +40,7 @@ const RecipeAccordion: FC<RecipeAccordionProps> = ({
   setRecipe,
   setImage,
   invalidInputs,
-  setInvalidInputs
+  setInvalidInputs,
 }) => {
   const theme = useTheme();
 
@@ -48,6 +49,7 @@ const RecipeAccordion: FC<RecipeAccordionProps> = ({
       switch (action) {
         case "title":
           setRecipe({ ...recipe, id: createId(payload), title: payload });
+          resetInvalidInput("title");
           break;
         case "type":
           setRecipe({ ...recipe, type: payload });
@@ -60,6 +62,12 @@ const RecipeAccordion: FC<RecipeAccordionProps> = ({
     const file = e.target.files[0];
     console.log(file);
     setImage(file);
+  };
+
+  const resetInvalidInput = (key: InputValidation) => {
+    const newInvalidInputs = new Map(invalidInputs);
+    newInvalidInputs.set(key, "");
+    setInvalidInputs(newInvalidInputs);
   };
 
   return (
@@ -77,6 +85,7 @@ const RecipeAccordion: FC<RecipeAccordionProps> = ({
             title={recipe.title}
             type={recipe.type}
             handleUpdate={handleUpdate}
+            invalidInput={invalidInputs.get("title")}
           />
         </AccordionDetails>
       </Accordion>
@@ -92,7 +101,11 @@ const RecipeAccordion: FC<RecipeAccordionProps> = ({
           <RecipeList
             list={recipe.ingredients || []}
             type="ingredients"
-            setRecipe={(ingredients) => setRecipe({ ...recipe, ingredients })}
+            setRecipe={(ingredients) => {
+              setRecipe({ ...recipe, ingredients });
+              resetInvalidInput("ingredients");
+            }}
+            invalidInput={invalidInputs.get("ingredients")}
           />
         </AccordionDetails>
       </Accordion>
@@ -108,7 +121,11 @@ const RecipeAccordion: FC<RecipeAccordionProps> = ({
           <RecipeList
             list={recipe.preparation || []}
             type="preparation"
-            setRecipe={(preparation) => setRecipe({ ...recipe, preparation })}
+            setRecipe={(preparation) => {
+              setRecipe({ ...recipe, preparation });
+              resetInvalidInput("preparation");
+            }}
+            invalidInput={invalidInputs.get("preparation")}
           />
         </AccordionDetails>
       </Accordion>
@@ -123,7 +140,11 @@ const RecipeAccordion: FC<RecipeAccordionProps> = ({
         <AccordionDetails>
           <RecipeYield
             recipeYield={recipe.yield}
-            handleUpdate={(y) => setRecipe({ ...recipe, yield: y })}
+            handleUpdate={(y) => {
+              setRecipe({ ...recipe, yield: y });
+              resetInvalidInput("yield");
+            }}
+            invalidInput={invalidInputs.get("yield")}
           />
         </AccordionDetails>
       </Accordion>
@@ -138,9 +159,11 @@ const RecipeAccordion: FC<RecipeAccordionProps> = ({
         <AccordionDetails>
           <RecipeTime
             recipeTime={recipe.preparationTime}
-            handleUpdate={(time) =>
-              setRecipe({ ...recipe, preparationTime: time })
-            }
+            handleUpdate={(time) => {
+              setRecipe({ ...recipe, preparationTime: time });
+              resetInvalidInput("preparationTime");
+            }}
+            invalidInput={invalidInputs.get("preparationTime")}
           />
         </AccordionDetails>
       </Accordion>
@@ -241,4 +264,4 @@ const RecipeAccordion: FC<RecipeAccordionProps> = ({
   );
 };
 
-export default RecipeAccordion
+export default RecipeAccordion;

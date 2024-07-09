@@ -1,5 +1,5 @@
 // React
-import { FC } from "react";
+import { FC, useState } from "react";
 // MUI
 import {
   Stack,
@@ -25,10 +25,14 @@ import RemoveIcon from "@mui/icons-material/Remove";
 type RecipeYieldProps = {
   recipeYield: YieldType;
   handleUpdate: (y: YieldType) => void;
+  invalidInput?: string;
 };
 
-const RecipeYield: FC<RecipeYieldProps> = ({ recipeYield, handleUpdate }) => {
-
+const RecipeYield: FC<RecipeYieldProps> = ({
+  recipeYield,
+  handleUpdate,
+  invalidInput,
+}) => {
   return (
     <Stack direction={"column"}>
       <Stack
@@ -151,6 +155,9 @@ const RecipeYield: FC<RecipeYieldProps> = ({ recipeYield, handleUpdate }) => {
           </RadioGroup>
         </FormControl>
       </Stack>
+      {invalidInput !== undefined && invalidInput !== "" && (
+        <Typography mt={2} variant="subtitle2" color={"error"}>{invalidInput}</Typography>
+      )}
     </Stack>
   );
 };

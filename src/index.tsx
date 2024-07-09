@@ -1,10 +1,81 @@
-import React from 'react';
+import React, { ReactElement, createContext, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './layout/App';
 import reportWebVitals from './reportWebVitals';
 import { ThemeProvider } from '@mui/material';
 import { theme } from './styles/theme';
+import { DBUser } from './types/user';
+import { FlashMessage, FlashSeverity, FlashState, flashTimeout } from './types/flash';
+import Loading from './components/Loading';
+// import { useAuthState } from 'react-firebase-hooks/auth';
+
+
+const defaultDBUser: DBUser = { isLogged: false, name: '', role: '' };
+
+// export const DBUserContext = createContext<DBUser>(defaultDBUser);
+
+export const FlashContext = createContext<FlashState | undefined>(undefined);
+
+const AppContainer = () => {
+  // const [content, setContent] = useState<ReactElement>(<Loading fullHeight />);
+  // const [user] = useAuthState(auth); // from firebase
+  const [dbUser, setDBUSer] = useState<DBUser>(defaultDBUser);
+  const [flashes, setFlashes] = useState<FlashMessage[]>([]);
+
+  const flashesRef = useRef(flashes);
+  flashesRef.current = flashes;
+
+  // flashState implements FlashStates. It wraps the necessary functions to be
+  // passed to the FlashContext.
+  const flashState = {
+    getMessages: (): FlashMessage[] => {
+      return flashes;
+    },
+
+    // add a flash to the list and set a timeout on it
+    addMessage: (message: string, severity: FlashSeverity) => {
+      const flash = new FlashMessage(message, severity);
+      const newFlashes = [...flashes, flash];
+      setFlashes(newFlashes);
+
+      // remove the flash after some timeout
+      setTimeout(() => {
+        let removedFlashes = [...flashesRef.current];
+        removedFlashes = removedFlashes.filter((f) => f.id !== flash.id);
+        setFlashes(removedFlashes);
+      }, flashTimeout);
+    },
+
+    // Set the visibility of flashMessage to false
+    hideMessage: (id: string) => {
+      let removedFlashes = [...flashesRef.current];
+      removedFlashes = removedFlashes.filter((f) => f.id !== id);
+      setFlashes(removedFlashes);
+    }
+  };
+
+  // useEffect(() => {
+  //   if (user) {
+  //     getDBUser(user.uid, flashState).then((newDBUser) => {
+  //       if (newDBUser !== undefined) {
+  //         setDBUSer(newDBUser);
+  //         setContent(<App />);
+  //       }
+  //     });
+  //   } else {
+  //     setContent(<App />);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [user]);
+
+  return (
+    <FlashContext.Provider value={flashState}>
+      <App />
+      {/* <DBUserContext.Provider value={dbUser}>{content}</DBUserContext.Provider> */}
+    </FlashContext.Provider>
+  );
+};
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -12,7 +83,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <App />
+      <AppContainer />
     </ThemeProvider>
   </React.StrictMode>
 );

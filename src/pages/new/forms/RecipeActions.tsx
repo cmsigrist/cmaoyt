@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { RecipeInfo, RecipeType, newRecipe } from "../../../types/recipe";
 import { Button, Stack } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -27,6 +27,9 @@ import { LoadingButton } from "@mui/lab";
 import { ROUTE_PAGE, ROUTE_RECIPE } from "../../../routes";
 import { useNavigate, useParams } from "react-router-dom";
 import DeleteModal from "./actions/DeleteModal";
+import CheckIcon from "@mui/icons-material/Check";
+import { FlashContext } from "../../..";
+import { FlashSeverity } from "../../../types/flash";
 
 type RecipeActionProps = {
   recipe: RecipeInfo;
@@ -47,6 +50,7 @@ const RecipeActions: FC<RecipeActionProps> = ({
 }) => {
   // not undefined in edit mode
   const { type, categoryId, recipeId } = useParams();
+  const flashContext = useContext(FlashContext);
   const navigate = useNavigate();
 
   const [uploading, setUploading] = useState<boolean | undefined>(undefined);
@@ -56,14 +60,15 @@ const RecipeActions: FC<RecipeActionProps> = ({
   const [openDelete, setOpenDelete] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const startRecipeUpload = async () => {
-    setUploading(true);
+  const isRecipeValid = (setLoading: (b: boolean | undefined) => void) => {
     if (recipe === newRecipe || recipe.id === "") {
-      // flashContext?.addMessage('Error: cannot upload empty recipe', FlashLevel.Error);
+      flashContext?.addMessage(
+        "Error: cannot upload empty recipe",
+        FlashSeverity.Error
+      );
       console.log("empty recipe");
-      console.log("empty recipe");
-      setUploading(undefined);
-      return;
+      setLoading(undefined);
+      return false;
     }
     const inputs = checkAllInputs(invalidInputs, recipe);
     setInvalidInputs(inputs);
@@ -71,8 +76,18 @@ const RecipeActions: FC<RecipeActionProps> = ({
     if (!isEmpty(inputs)) {
       console.log("invalid inputs");
       console.log(invalidInputs);
-      // flashContext?.addMessage('Error: some fields were not correctly completed', FlashLevel.Error);
-      setUploading(undefined);
+      flashContext?.addMessage('Error: some fields were not correctly completed', FlashSeverity.Error);
+      setLoading(undefined);
+      return false;
+    }
+
+    return true;
+  };
+
+  const startRecipeUpload = async () => {
+    setUploading(true);
+
+    if (!isRecipeValid(setUploading)) {
       return;
     }
 
@@ -106,7 +121,7 @@ const RecipeActions: FC<RecipeActionProps> = ({
       return;
     }
     if (image === undefined) {
-      // flashContext?.addMessage('Please choose an image first', FlashLevel.Warning);
+      flashContext?.addMessage('Please choose an image first', FlashSeverity.Warning);
       setUploading(undefined);
       return;
     }
@@ -116,46 +131,64 @@ const RecipeActions: FC<RecipeActionProps> = ({
   };
 
   const uploadRecipe = (imgURL: string) => {
-    const recipeWithImgURL = {...recipe, imgURL}
+    const recipeWithImgURL = { ...recipe, imgURL };
     // edit mode
     if (isEditMode && recipeId !== undefined) {
       console.log("updating recipe");
       updateRecipe(recipeWithImgURL, type as RecipeType, recipeId, categoryId);
-      // flashContext?.addMessage("Recipe successfully updated", FlashLevel.Info);
+      flashContext?.addMessage("Recipe successfully updated", FlashSeverity.Success);
     } else {
       console.log("storing recipe");
       storeRecipe(recipeWithImgURL);
-      // flashContext?.addMessage("Recipe successfully created", FlashLevel.Info);
+      flashContext?.addMessage("Recipe successfully created", FlashSeverity.Success);
     }
 
     setUploading(false);
-    setTimeout(
-      () =>
-        navigate(
-          ROUTE_RECIPE(
-            recipe.type,
-            recipe.id,
-            recipe.category !== undefined
-              ? createId(recipe.category)
-              : undefined
-          )
-        ),
-      500
-    );
+    setTimeout(() => {
+      setUploading(undefined);
+      setTimeout(
+        () =>
+          navigate(
+            ROUTE_RECIPE(
+              recipe.type,
+              recipe.id,
+              recipe.category !== undefined
+                ? createId(recipe.category)
+                : undefined
+            )
+          ),
+        1000
+      );
+    }, 2000);
   };
 
   const exportRecipe = async () => {
     setExporting(true);
     const jsonString = JSON.stringify(marshallRecipe(recipe));
-    const blob = await downloadImage(recipe.imgURL);
-
-    const zip = new JSZip();
-    zip.file(`${recipe.id}.json`, jsonString);
-    zip.file(recipe.id, blob);
-    zip.generateAsync({ type: "blob" }).then((content) => {
-      saveAs(content, `${recipe.id}.zip`);
-      setExporting(false);
-    });
+    if (!isRecipeValid(setExporting)) {
+      return;
+    }
+    downloadImage(recipe.imgURL)
+      .then((blob) => {
+        const zip = new JSZip();
+        zip.file(`${recipe.id}.json`, jsonString);
+        zip.file(recipe.id, blob);
+        zip
+          .generateAsync({ type: "blob" })
+          .then((content) => {
+            saveAs(content, `${recipe.id}.zip`);
+            setExporting(false);
+            setTimeout(() => setExporting(undefined), 2000);
+          })
+          .catch((e) => {
+            console.log(console.error(e));
+            setExporting(undefined);
+          });
+      })
+      .catch((e) => {
+        console.log(console.error(e));
+        setExporting(undefined);
+      });
   };
 
   const importRecipe = (e: any) => {
@@ -167,9 +200,13 @@ const RecipeActions: FC<RecipeActionProps> = ({
         console.log(importedRecipe);
         const newRecipe = marshallRecipe(importedRecipe);
         setRecipe(newRecipe);
+        setImporting(false);
+        setTimeout(() => setImporting(undefined), 2000);
       })
-      .catch((e) => console.log(console.error(e)))
-      .finally(() => setImporting(false));
+      .catch((e) => {
+        console.log(console.error(e));
+        setImporting(undefined);
+      });
   };
 
   const handleDelete = () => {
@@ -223,10 +260,15 @@ const RecipeActions: FC<RecipeActionProps> = ({
           loading={exporting}
           loadingPosition="start"
           variant="outlined"
-          startIcon={<DownloadIcon />}
+          color={exporting === false ? "success" : undefined}
+          startIcon={exporting === false ? <CheckIcon /> : <DownloadIcon />}
           onClick={exportRecipe}
         >
-          Export
+          {exporting === true
+            ? "Exporting..."
+            : exporting === false
+            ? "Exported"
+            : "Export"}
         </LoadingButton>
 
         <LoadingButton
@@ -234,19 +276,29 @@ const RecipeActions: FC<RecipeActionProps> = ({
           loadingPosition="start"
           component="label"
           variant="outlined"
-          startIcon={<UploadIcon />}
+          color={importing === false ? "success" : undefined}
+          startIcon={importing === false ? <CheckIcon /> : <UploadIcon />}
         >
-          Import
+          {importing === true
+            ? "Importing..."
+            : importing === false
+            ? "Imported"
+            : "Import"}
           <HiddenInput type="file" onChange={importRecipe} />
         </LoadingButton>
         <LoadingButton
           loading={uploading}
           loadingPosition="start"
           variant="contained"
-          startIcon={<CloudUploadIcon />}
+          color={uploading === false ? "success" : undefined}
+          startIcon={uploading === false ? <CheckIcon /> : <CloudUploadIcon />}
           onClick={startRecipeUpload}
         >
-          Upload
+          {uploading === true
+            ? "Uploading..."
+            : uploading === false
+            ? "Uploaded"
+            : "Upload"}
         </LoadingButton>
       </Stack>
     </>

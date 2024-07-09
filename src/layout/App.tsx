@@ -21,6 +21,7 @@ import Recipe from "../pages/Recipe";
 import RecipeNew from "../pages/RecipeNew";
 import RecipeEdit from "../pages/RecipeEdit";
 import ClientError from "../pages/ClientError";
+import Flash from "../components/Flash";
 
 function App() {
   // const DBUser = useContext(DBUserContext);
@@ -47,7 +48,7 @@ function App() {
       <Router>
         <Stack minHeight={"100vh"} direction={"column"}>
           <ResponsiveAppBar />
-          {/* <Flash /> */}
+          <Flash />
           <Container
             maxWidth="xl"
             sx={{
@@ -94,7 +95,7 @@ function App() {
                 }
               />
               <Route
-                path={'/edit/:type/:id'}
+                path={'/edit/:type/:recipeId'}
                 element={
                   // <RequireAuth>
                   <RecipeEdit />

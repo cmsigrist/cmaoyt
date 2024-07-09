@@ -13,7 +13,7 @@ const RecipeEdit: FC = () => {
   const [_, setLoading] = useState(true);
   const [error, setError] = useState("");
   const theme = useTheme();
-
+  
   useEffect(() => {
     if (recipeId !== undefined && type !== undefined) {
       fetchRecipe(

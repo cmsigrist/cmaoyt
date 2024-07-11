@@ -19,18 +19,26 @@ import { TimeType } from "../../../../types/recipe";
 type RecipeTimeProps = {
   recipeTime: TimeType;
   handleUpdate: (time: TimeType) => void;
-  invalidInput?: string
+  invalidInput?: string;
 };
 
-const RecipeTime: FC<RecipeTimeProps> = ({ recipeTime, handleUpdate, invalidInput }) => {
+const RecipeTime: FC<RecipeTimeProps> = ({
+  recipeTime,
+  handleUpdate,
+  invalidInput,
+}) => {
   return (
     <Stack direction="row" spacing={1}>
       <TextField
         id="outlined-required"
         value={recipeTime.time}
         size="small"
+        type="number"
         onChange={(event) =>
-          handleUpdate({ ...recipeTime, time: Number.parseInt(event.target.value) })
+          handleUpdate({
+            ...recipeTime,
+            time: Number.parseInt(event.target.value),
+          })
         }
         error={invalidInput !== undefined && invalidInput !== ""}
         helperText={invalidInput}

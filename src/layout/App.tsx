@@ -1,5 +1,5 @@
 // React
-import { Suspense } from "react";
+import { Suspense, useContext } from "react";
 // MUI
 import { Container, Stack } from "@mui/material";
 // Components
@@ -18,37 +18,45 @@ import Flash from "../components/Flash";
 // Hooks
 // Utils
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import {
   ROUTE_DESSERTS,
   ROUTE_DRINKS,
   ROUTE_FORBIDDEN,
   ROUTE_HOME,
+  ROUTE_LOGGED,
   ROUTE_MEALS,
   ROUTE_RECIPE_NEW,
 } from "../routes";
+import { DBUserContext } from "..";
 // Types
 // Icons
 
 function App() {
-  // const DBUser = useContext(DBUserContext);
+  const DBUser = useContext(DBUserContext);
 
-  // const RequireAuth = ({
-  //   children,
-  // }: {
-  //   children: JSX.Element;
-  //   roles?: string[];
-  // }): JSX.Element => {
-  //   let location = useLocation();
+  const RequireAuth = ({
+    children,
+  }: {
+    children: JSX.Element;
+    roles?: string[];
+  }): JSX.Element => {
+    let location = useLocation();
 
-  //   if (!DBUser.isLogged || DBUser.role !== 'admin') {
-  //     return (
-  //       <Navigate to={ROUTE_FORBIDDEN} state={{ from: location }} replace />
-  //     );
-  //   }
+    if (!DBUser.isLogged || DBUser.role !== "admin") {
+      return (
+        <Navigate to={ROUTE_FORBIDDEN} state={{ from: location }} replace />
+      );
+    }
 
-  //   return children;
-  // };
+    return children;
+  };
 
   return (
     <Suspense fallback="...loading app">
@@ -66,47 +74,79 @@ function App() {
             }}
           >
             <Routes>
-              {/* {
-                <Route
-                  path={ROUTE_RECIPE_NEW}
-                  element={
-                    <RequireAuth>
-                      <RecipeNew />
-                    </RequireAuth>
-                  }
-                />
-              } */}
-
-              {/*<Route path={ROUTE_LOGGED} element={<Logged />} />
-              <Route path={ROUTE_SETTINGS} element={<Settings />} />*/}
+              {/* <Route path={ROUTE_LOGGED} element={<Logged />} /> */}
+              {/* <Route path={ROUTE_SETTINGS} element={<Settings />} /> */}
               <Route path={ROUTE_HOME} element={<Home />} />
-              <Route path={ROUTE_DESSERTS} element={<Desserts />} />
-              <Route path={ROUTE_MEALS} element={<Meals />} />
-              <Route path={ROUTE_DRINKS} element={<Drinks />} />
-              <Route path={ROUTE_RECIPE_NEW} element={<RecipeNew />} />
+              <Route
+                path={ROUTE_DESSERTS}
+                element={
+                  <RequireAuth>
+                    <Desserts />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path={ROUTE_MEALS}
+                element={
+                  <RequireAuth>
+                    <Meals />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path={ROUTE_DRINKS}
+                element={
+                  <RequireAuth>
+                    <Drinks />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path={ROUTE_RECIPE_NEW}
+                element={
+                  <RequireAuth>
+                    <RecipeNew />
+                  </RequireAuth>
+                }
+              />
               <Route
                 path={"/:type/category/:categoryId"}
-                element={<Category />}
+                element={
+                  <RequireAuth>
+                    <Category />
+                  </RequireAuth>
+                }
               />
-              <Route path={"/:type/:recipeId"} element={<Recipe />} />
+              <Route
+                path={"/:type/:recipeId"}
+                element={
+                  <RequireAuth>
+                    <Recipe />
+                  </RequireAuth>
+                }
+              />
               <Route
                 path={"/:type/category/:categoryId/:recipeId"}
-                element={<Recipe />}
+                element={
+                  <RequireAuth>
+                    <Recipe />
+                  </RequireAuth>
+                }
               />
               <Route
                 path={"/edit/:type/category/:categoryId/:recipeId"}
                 element={
-                  // <RequireAuth>
-                  <RecipeEdit />
-                  // </RequireAuth>
+                  <RequireAuth>
+                    <RecipeEdit />
+                  </RequireAuth>
                 }
               />
               <Route
-                path={'/edit/:type/:recipeId'}
+                path={"/edit/:type/:recipeId"}
                 element={
-                  // <RequireAuth>
-                  <RecipeEdit />
-                  // </RequireAuth>
+                  <RequireAuth>
+                    <RecipeEdit />
+                  </RequireAuth>
                 }
               />
               <Route
@@ -114,8 +154,8 @@ function App() {
                 element={
                   <ClientError
                     statusCode={404}
-                    description={'The page you are looking for does not exist.'}
-                    title={'Page not found'}
+                    description={"The page you are looking for does not exist."}
+                    title={"Page not found"}
                   />
                 }
               />
@@ -124,11 +164,11 @@ function App() {
                 element={
                   <ClientError
                     statusCode={403}
-                    title={'Forbidden page'}
-                    description={'You are not authorized to access this page.'}
+                    title={"Forbidden page"}
+                    description={"You are not authorized to access this page."}
                   />
                 }
-              /> 
+              />
               {/* <Route
                 path={ROUTE_REGISTER}
                 element={

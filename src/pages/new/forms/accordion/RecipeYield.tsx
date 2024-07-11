@@ -1,12 +1,9 @@
 // React
-import { FC, useState } from "react";
+import { FC } from "react";
 // MUI
 import {
   Stack,
   Typography,
-  Paper,
-  IconButton,
-  InputBase,
   FormControl,
   FormControlLabel,
   Radio,
@@ -19,8 +16,6 @@ import {
 // Types
 import { YieldType } from "../../../../types/recipe";
 // Icons
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
 
 type RecipeYieldProps = {
   recipeYield: YieldType;
@@ -42,53 +37,20 @@ const RecipeYield: FC<RecipeYieldProps> = ({
         marginBottom={2}
       >
         <Typography>Quantity:</Typography>
-        <Paper
-          component="form"
-          sx={{
-            p: "2px 4px",
-            display: "flex",
-            alignItems: "center",
-            width: 120,
-          }}
-        >
-          <IconButton
-            sx={{ p: "10px" }}
-            size="small"
-            onClick={() =>
-              handleUpdate({
-                ...recipeYield,
-                quantity: recipeYield.quantity + 1,
-              })
-            }
-          >
-            <AddIcon fontSize="inherit" />
-          </IconButton>
-          <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            placeholder=""
-            value={recipeYield.quantity}
-            onChange={(event) =>
-              handleUpdate({
-                ...recipeYield,
-                quantity: Number.parseInt(event.target.value),
-              })
-            }
-          />
-          <IconButton
-            size="small"
-            type="button"
-            sx={{ p: "10px" }}
-            onClick={() =>
-              handleUpdate({
-                ...recipeYield,
-                quantity:
-                  recipeYield.quantity > 0 ? recipeYield.quantity - 1 : 0,
-              })
-            }
-          >
-            <RemoveIcon fontSize="inherit" />
-          </IconButton>
-        </Paper>
+        <TextField
+          id="outlined-required"
+          value={recipeYield.quantity}
+          size="small"
+          type="number"
+          onChange={(event) =>
+            handleUpdate({
+              ...recipeYield,
+              quantity: Number.parseInt(event.target.value),
+            })
+          }
+          error={invalidInput !== undefined && invalidInput !== ""}
+          helperText={invalidInput}
+        />
       </Stack>
       <Stack direction={"row"} spacing={2} alignItems={"center"}>
         <Typography>Serving:</Typography>
@@ -156,7 +118,9 @@ const RecipeYield: FC<RecipeYieldProps> = ({
         </FormControl>
       </Stack>
       {invalidInput !== undefined && invalidInput !== "" && (
-        <Typography mt={2} variant="subtitle2" color={"error"}>{invalidInput}</Typography>
+        <Typography mt={2} variant="subtitle2" color={"error"}>
+          {invalidInput}
+        </Typography>
       )}
     </Stack>
   );

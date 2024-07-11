@@ -6,9 +6,10 @@ import {
   signInWithEmailAndPassword,
   // createUserWithEmailAndPassword,
   // sendPasswordResetEmail,
-  signOut
-} from 'firebase/auth';
+  signOut,
+} from "firebase/auth";
 import { firebaseConfig } from "./config";
+import { FlashSeverity, FlashState } from "../types/flash";
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
@@ -38,20 +39,24 @@ const signInWithGoogle = async () => {
 const logInWithEmailAndPassword = async (
   email: string,
   password: string,
-  // flashContext: FlashState | undefined,
+  flashContext: FlashState | undefined,
   setIsLoading: (l: boolean) => void
 ) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
     setIsLoading(false);
-    // flashContext?.addMessage('Login successful', FlashLevel.Info);
+    flashContext?.addMessage("Login successful", FlashSeverity.Info);
   } catch (err) {
     console.error(err);
-    // flashContext?.addMessage(err as string, FlashLevel.Info);
+    flashContext?.addMessage(err as string, FlashSeverity.Info);
   }
 };
 
-const registerWithEmailAndPassword = async (name: string, email: string, password: string) => {
+const registerWithEmailAndPassword = async (
+  name: string,
+  email: string,
+  password: string
+) => {
   // try {
   //   const res = await createUserWithEmailAndPassword(auth, email, password);
   //   const user = res.user;
@@ -75,12 +80,12 @@ const sendPasswordReset = async (email: string) => {
   // }
 };
 
-const logout = async () => {
+const logout = async (flashContext: FlashState | undefined) => {
   try {
     await signOut(auth);
-    // flashContext?.addMessage('Logout successful', FlashLevel.Info);
+    flashContext?.addMessage("Logout successful", FlashSeverity.Info);
   } catch (err) {
-    // flashContext?.addMessage(err as string, FlashLevel.Info);
+    flashContext?.addMessage(err as string, FlashSeverity.Info);
   }
 };
 
@@ -90,5 +95,5 @@ export {
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,
   sendPasswordReset,
-  logout
+  logout,
 };

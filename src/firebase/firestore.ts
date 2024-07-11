@@ -1,41 +1,44 @@
+// Utils
 import { getFirestore, query, getDocs, collection, where } from 'firebase/firestore';
 import { app } from './firebase';
+// Type
 import { DBUser } from '../types/user';
+import { FlashSeverity, FlashState } from '../types/flash';
 
-// const firestore = getFirestore(app);
+const firestore = getFirestore(app);
 
-// const usersRef = collection(firestore, 'users');
+const usersRef = collection(firestore, 'users');
 
-// const getDBUser = async (
-//   userID: string,
-//   // flashContext: FlashState | undefined
-// ): Promise<DBUser | undefined> => {
-//   const q = query(usersRef, where('uid', '==', userID));
-//   try {
-//     const querySnapshot = await getDocs(q);
+const getDBUser = async (
+  userID: string,
+  flashContext: FlashState | undefined
+): Promise<DBUser | undefined> => {
+  const q = query(usersRef, where('uid', '==', userID));
+  try {
+    const querySnapshot = await getDocs(q);
 
-//     if (querySnapshot.size > 0) {
-//       const res = querySnapshot.docs[0].data();
+    if (querySnapshot.size > 0) {
+      const res = querySnapshot.docs[0].data();
 
-//       if (res !== undefined) {
-//         const DBUser: DBUser = {
-//           isLogged: true,
-//           name: res.name,
-//           role: res.role
-//         };
+      if (res !== undefined) {
+        const DBUser: DBUser = {
+          isLogged: true,
+          name: res.name,
+          role: res.role
+        };
 
-//         console.log(DBUser);
+        console.log(DBUser);
 
-//         return DBUser;
-//       }
-//       throw new Error('No results for user with uid: ' + userID);
-//     }
+        return DBUser;
+      }
+      throw new Error('No results for user with uid: ' + userID);
+    }
 
-//     throw new Error('No match for user with uid: ' + userID);
-//   } catch (e: any) {
-//     console.log(e);
-//     // flashContext?.addMessage(e as string, FlashLevel.Error);
-//   }
-// };
+    throw new Error('No match for user with uid: ' + userID);
+  } catch (e: any) {
+    console.log(e);
+    flashContext?.addMessage(e as string, FlashSeverity.Error);
+  }
+};
 
-// export { getDBUser };
+export { getDBUser };

@@ -28,7 +28,6 @@ const fetchAllMetadata = async (
   setMetadata: (m: Metadata[]) => void,
   setTitle: (title: string) => void,
   setLoading: (l: boolean) => void,
-  setError: (e: string) => void,
   category?: string
 ) => {
   const metadata: Metadata[] = [];
@@ -36,7 +35,8 @@ const fetchAllMetadata = async (
   const snapshot = await get(child(metadataRef, path));
 
   if (!snapshot.exists()) {
-    setError("fetch all metadata: no data available");
+    setLoading(false);
+    return;
   }
 
   snapshot.forEach((s) => {
@@ -53,7 +53,7 @@ const fetchAllMetadata = async (
       } else {
         // It's the title of the category don't add to metadata list
         if (s.key === "title") {
-          setTitle(s.val())
+          setTitle(s.val());
         } else {
           // category
           const recipes: RecipeMetadata[] = [];
@@ -86,6 +86,65 @@ const fetchAllMetadata = async (
   setLoading(false);
 };
 
+const fetchRecipeMetadata = async (
+  setResults: (metadata: RecipeMetadata[]) => void,
+  setIsLoading: (loading: boolean) => void
+) => {
+  const metadata: RecipeMetadata[] = [];
+  const types = Object.values(RecipeType);
+
+  Promise.allSettled(
+    types.map(async (type) => {
+      const path = `${type}/`;
+      return { type: type, snapshot: await get(child(metadataRef, path)) };
+    })
+  )
+    .then((promises) => {
+      promises.forEach((promise) => {
+        if (promise.status === "fulfilled") {
+          const { type, snapshot } = promise.value;
+
+          if (snapshot.exists()) {
+            snapshot.forEach((s) => {
+              if (s.key !== null) {
+                //recipe
+                if (s.val().imgURL !== undefined) {
+                  let newMetadata = new RecipeMetadata(
+                    s.key,
+                    s.val().title,
+                    type,
+                    s.val().imgURL
+                  );
+                  metadata.push(newMetadata);
+                } else if (s.key !== "title") {
+                  s.forEach((child: any) => {
+                    if (child.val().title !== undefined)
+                      metadata.push(
+                        new RecipeMetadata(
+                          child.key,
+                          child.val().title,
+                          type,
+                          child.val().imgURL,
+                          s.key
+                        )
+                      );
+                  });
+                }
+              }
+            });
+          }
+        } else {
+          console.log(promise.reason);
+        }
+      });
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      setIsLoading(false);
+      setResults(metadata);
+    });
+};
+
 const updateMetadata = async (recipe: RecipeInfo, path: string) => {
   if (recipe.category) {
     const snapshot = await get(child(metadataRef, path));
@@ -107,8 +166,7 @@ const updateMetadata = async (recipe: RecipeInfo, path: string) => {
 const fetchCategories = async (
   type: RecipeType,
   setCategories: (m: string[]) => void,
-  setLoading: (l: boolean) => void,
-  setError: (e: string) => void
+  setLoading: (l: boolean) => void
 ) => {
   const categories: string[] = [];
   const snapshot = await get(child(metadataRef, `${type}/`));
@@ -123,10 +181,8 @@ const fetchCategories = async (
     });
 
     setCategories(categories);
-    setLoading(false);
-  } else {
-    setError("fetch categories: no data available");
   }
+  setLoading(false);
 };
 
 // --------------------------------------------------------------------------
@@ -137,7 +193,6 @@ const fetchRecipe = async (
   type: RecipeType,
   setRecipe: (r: RecipeInfo) => void,
   setLoading: (l: boolean) => void,
-  setError: (e: string) => void,
   category?: string
 ) => {
   const path =
@@ -146,10 +201,8 @@ const fetchRecipe = async (
 
   if (snapshot.exists()) {
     setRecipe(snapshot.val());
-    setLoading(false);
-  } else {
-    setError("fetch recipe: no data available");
   }
+  setLoading(false);
 };
 
 const storeRecipe = (recipe: RecipeInfo) => {
@@ -212,6 +265,7 @@ const isOverWritingRecipe = async (recipe: RecipeInfo): Promise<boolean> => {
 
 export {
   fetchAllMetadata,
+  fetchRecipeMetadata,
   fetchRecipe,
   storeRecipe,
   fetchCategories,

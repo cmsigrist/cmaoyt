@@ -41,7 +41,7 @@ const RecipeCategory: FC<RecipeCategoryProps> = ({
 
   useEffect(() => {
     // fetch categories
-    fetchCategories(type, setCategories, setLoading, setError);
+    fetchCategories(type, setCategories, setLoading);
   }, []);
 
   useEffect(() => {

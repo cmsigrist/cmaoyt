@@ -19,11 +19,10 @@ const RecipeGrid: FC<{ type: RecipeType; categoryId?: string }> = ({
   const theme = useTheme();
   const [metadata, setMetadata] = useState<Metadata[]>([]);
   const [title, setTitle] = useState("")
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchAllMetadata(type, setMetadata, setTitle, setLoading, setError, categoryId);
+    fetchAllMetadata(type, setMetadata, setTitle, setLoading, categoryId);
   }, []);
 
   return (

@@ -47,19 +47,19 @@ export class Metadata {
 
 export class RecipeMetadata extends Metadata {
   imgURL;
-  category;
+  categoryId;
 
   constructor(
     id: string,
     title: string,
     type: RecipeType,
     imgURL: string,
-    category?: string
+    categoryId?: string
   ) {
     super(id, title, type);
     this.id = id;
     this.imgURL = imgURL;
-    this.category = category;
+    this.categoryId = categoryId;
   }
 }
 

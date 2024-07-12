@@ -18,7 +18,6 @@ const RecipeEdit: FC = () => {
   const { type, categoryId, recipeId } = useParams();
   const [recipe, setRecipe] = useState<RecipeInfo>();
   const [_, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const theme = useTheme();
 
   useEffect(() => {
@@ -28,7 +27,6 @@ const RecipeEdit: FC = () => {
         type as RecipeType,
         setRecipe,
         setLoading,
-        setError,
         categoryId
       );
     }

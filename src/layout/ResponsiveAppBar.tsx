@@ -37,14 +37,19 @@ import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LoginIcon from "@mui/icons-material/Login";
+import MobilePopover from "./ResponsiveAppBar/MobilePopover";
+import SearchBar from "./ResponsiveAppBar/SearchBar";
 
 function ResponsiveAppBar() {
   const theme = useTheme();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [searchMode, setSearchMode] = useState(false);
+
   const DBUser = useContext(DBUserContext);
   const flashContext = useContext(FlashContext);
   const [openLogin, setOpenLogin] = useState(false);
+
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -54,6 +59,11 @@ function ResponsiveAppBar() {
 
     logout(flashContext);
     navigate(ROUTE_HOME);
+  };
+
+  const handleNavigateTo = () => {
+    handleCloseNavMenu();
+    setSearchMode(false);
   };
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -71,59 +81,20 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
-  const Search = styled("div")(({ theme }) => ({
-    position: "relative",
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    "&:hover": {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(3),
-      width: "auto",
-    },
-  }));
-
-  const SearchIconWrapper = styled("div")(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  }));
-
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: "inherit",
-    "& .MuiInputBase-input": {
-      padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-      transition: theme.transitions.create("width"),
-      width: "100%",
-      [theme.breakpoints.up("md")]: {
-        width: "20ch",
-      },
-    },
-  }));
-
   return (
     <>
-      <LoginModal
-        open={openLogin}
-        handleClose={() => setOpenLogin(false)}
-      />
+      <LoginModal open={openLogin} handleClose={() => setOpenLogin(false)} />
       <AppBar
         position="static"
         sx={{ backgroundColor: theme.palette.primary.main }}
       >
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            <NavLink to={ROUTE_HOME} style={{ textDecoration: "none" }}>
+            <NavLink
+              to={ROUTE_HOME}
+              style={{ textDecoration: "none" }}
+              onClick={() => setSearchMode(false)}
+            >
               <Typography
                 variant="h6"
                 noWrap
@@ -158,93 +129,19 @@ function ResponsiveAppBar() {
               >
                 <MenuIcon />
               </IconButton>
-              <Popover
-                open={anchorElNav !== null}
-                anchorEl={anchorElNav}
-                onClose={handleCloseNavMenu}
-                slotProps={{
-                  paper: {
-                    sx: {
-                      width: "100%",
-                    },
-                  },
-                }}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left",
-                }}
-              >
-                <Stack
-                  direction="column"
-                  sx={{ paddingY: 2, paddingX: 2 }}
-                  spacing={1}
-                  justifyContent={"center"}
-                >
-                  <NavLink to={ROUTE_DESSERTS}>
-                    <Button key="desserts" onClick={handleCloseNavMenu}>
-                      Desserts
-                    </Button>
-                  </NavLink>
-                  <NavLink to={ROUTE_MEALS}>
-                    <Button key="meals" onClick={handleCloseNavMenu}>
-                      Meals
-                    </Button>
-                  </NavLink>
-                  <NavLink to={ROUTE_DRINKS}>
-                    <Button key="drinks" onClick={handleCloseNavMenu}>
-                      Drinks
-                    </Button>
-                  </NavLink>
-                  <NavLink
-                    to={ROUTE_RECIPE_NEW}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <Button
-                      key={"create"}
-                      variant="contained"
-                      fullWidth
-                      onClick={handleCloseNavMenu}
-                    >
-                      Create
-                    </Button>
-                  </NavLink>
-                </Stack>
-                <Stack sx={{ paddingY: 2, paddingX: 2 }} spacing={2}>
-                  {DBUser.isLogged && (
-                    <>
-                      <Typography textAlign="center">
-                        Logged as {DBUser.name}
-                      </Typography>
-                      <Button
-                        variant="contained"
-                        fullWidth
-                        startIcon={<LogoutIcon />}
-                        onClick={() => {
-                          handleLogout();
-                          handleCloseNavMenu();
-                        }}
-                      >
-                        Logout
-                      </Button>
-                    </>
-                  )}
-                  {!DBUser.isLogged && (
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      startIcon={<LoginIcon />}
-                      onClick={() => {
-                        setOpenLogin(true);
-                        handleCloseNavMenu();
-                      }}
-                    >
-                      Login
-                    </Button>
-                  )}
-                </Stack>
-              </Popover>
+              <MobilePopover
+                anchorElNav={anchorElNav}
+                handleCloseNavMenu={handleCloseNavMenu}
+                handleLogout={handleLogout}
+                setOpenLogin={setOpenLogin}
+                setSearchMode={setSearchMode}
+              />
             </Box>
-            <NavLink to={ROUTE_HOME} style={{ textDecoration: "none" }}>
+            <NavLink
+              to={ROUTE_HOME}
+              style={{ textDecoration: "none" }}
+              onClick={() => setSearchMode(false)}
+            >
               <Typography
                 variant="h5"
                 noWrap
@@ -271,38 +168,34 @@ function ResponsiveAppBar() {
                 <Button
                   key="desserts"
                   color="white"
-                  onClick={handleCloseNavMenu}
+                  onClick={handleNavigateTo}
                 >
                   Desserts
                 </Button>
               </NavLink>
               <NavLink to={ROUTE_MEALS}>
-                <Button key="meals" color="white" onClick={handleCloseNavMenu}>
+                <Button key="meals" color="white" onClick={handleNavigateTo}>
                   Meals
                 </Button>
               </NavLink>
               <NavLink to={ROUTE_DRINKS}>
-                <Button key="drinks" color="white" onClick={handleCloseNavMenu}>
+                <Button key="drinks" color="white" onClick={handleNavigateTo}>
                   Drinks
                 </Button>
               </NavLink>
             </Box>
             {DBUser.isLogged && (
-              <Box
+              <Stack
+                direction={"row"}
+                spacing={2}
                 sx={{
                   alignItems: "center",
                   display: { xs: "none", md: "flex" },
                 }}
               >
-                <Search>
-                  <SearchIconWrapper>
-                    <SearchIcon />
-                  </SearchIconWrapper>
-                  <StyledInputBase
-                    placeholder="Search…"
-                    inputProps={{ "aria-label": "search" }}
-                  />
-                </Search>
+                <IconButton onClick={() => setSearchMode(!searchMode)}>
+                  <SearchIcon sx={{ color: theme.palette.white.main }} />
+                </IconButton>
                 <NavLink
                   to={ROUTE_RECIPE_NEW}
                   style={{ textDecoration: "none" }}
@@ -310,7 +203,7 @@ function ResponsiveAppBar() {
                   <Button
                     key={"create"}
                     variant="outlined"
-                    onClick={handleCloseNavMenu}
+                    onClick={handleNavigateTo}
                     color="white"
                     sx={{
                       my: 2,
@@ -338,12 +231,12 @@ function ResponsiveAppBar() {
                       vertical: "bottom",
                       horizontal: "right",
                     }}
-                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                    transformOrigin={{ horizontal: "right", vertical: "top" }}
                     slotProps={{
                       paper: {
                         sx: {
                           width: 200,
-                          mt:1.5
+                          mt: 1.5,
                         },
                       },
                     }}
@@ -369,7 +262,7 @@ function ResponsiveAppBar() {
                     </Stack>
                   </Popover>
                 </Box>
-              </Box>
+              </Stack>
             )}
             {!DBUser.isLogged && (
               <Box
@@ -381,11 +274,11 @@ function ResponsiveAppBar() {
                 <Button
                   key={"login"}
                   variant="outlined"
+                  startIcon={<LoginIcon />}
                   onClick={() => setOpenLogin(true)}
                   color="white"
                   sx={{
                     my: 2,
-                    display: "block",
                     marginRight: 2,
                   }}
                 >
@@ -396,6 +289,9 @@ function ResponsiveAppBar() {
           </Toolbar>
         </Container>
       </AppBar>
+      {searchMode && (
+        <SearchBar setSearchMode={setSearchMode} />
+      )}
     </>
   );
 }

@@ -11,14 +11,13 @@ import { fetchRecipe } from "../firebase/database";
 import { width } from "../styles/theme";
 // Types
 import { RecipeInfo, RecipeType } from "../types/recipe";
+import Loading from "../components/Loading";
 // Icons
-
 
 const Recipe: FC = () => {
   const { type, categoryId, recipeId } = useParams();
   const [recipe, setRecipe] = useState<RecipeInfo>();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     if (recipeId !== undefined && type !== undefined) {
@@ -27,7 +26,6 @@ const Recipe: FC = () => {
         type as RecipeType,
         setRecipe,
         setLoading,
-        setError,
         categoryId
       );
     }
@@ -35,7 +33,11 @@ const Recipe: FC = () => {
 
   return (
     <Box width={width} marginTop={4} marginBottom={4}>
-      <RecipeDisplay recipe={recipe} preview={false} />
+      {loading ? (
+        <Loading />
+      ) : (
+        <RecipeDisplay recipe={recipe} preview={false} />
+      )}
     </Box>
   );
 };

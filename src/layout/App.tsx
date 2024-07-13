@@ -60,7 +60,7 @@ function App() {
 
   return (
     <Suspense fallback="...loading app">
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <Stack minHeight={"100vh"} direction={"column"}>
           <ResponsiveAppBar />
           <Flash />

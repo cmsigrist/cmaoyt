@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/static/css/main.1a7488ce.css",
+    "main.js": "/static/js/main.fadd3949.js",
+    "static/js/453.ebeccaf1.chunk.js": "/static/js/453.ebeccaf1.chunk.js",
+    "static/media/logo.png": "/static/media/logo.1f8a2c573a4934509d43.png",
+    "static/media/espresso_cookies.jpg": "/static/media/espresso_cookies.e6817a24596c5774fe42.jpg",
+    "index.html": "/index.html",
+    "main.1a7488ce.css.map": "/static/css/main.1a7488ce.css.map",
+    "main.fadd3949.js.map": "/static/js/main.fadd3949.js.map",
+    "453.ebeccaf1.chunk.js.map": "/static/js/453.ebeccaf1.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1a7488ce.css",
+    "static/js/main.fadd3949.js"
+  ]
+}

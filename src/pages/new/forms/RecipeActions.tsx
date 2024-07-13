@@ -126,7 +126,7 @@ const RecipeActions: FC<RecipeActionProps> = ({
 
   const proceedWithUpload = () => {
     // nothing to do image was not modified
-    if (isEditMode && image === undefined) {
+    if (recipe.imgURL !== undefined && recipe.imgURL !== "") {
       uploadRecipe(recipe.imgURL);
       return;
     }

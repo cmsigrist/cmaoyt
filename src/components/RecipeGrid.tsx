@@ -18,7 +18,7 @@ const RecipeGrid: FC<{ type: RecipeType; categoryId?: string }> = ({
 }) => {
   const theme = useTheme();
   const [metadata, setMetadata] = useState<Metadata[]>([]);
-  const [title, setTitle] = useState("")
+  const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,7 +36,11 @@ const RecipeGrid: FC<{ type: RecipeType; categoryId?: string }> = ({
             textAlign="center"
             marginBottom={6}
             variant="h2"
-          >{categoryId === undefined ? type[0].toUpperCase() + type.substring(1) : title}</Typography>
+          >
+            {categoryId === undefined
+              ? type[0].toUpperCase() + type.substring(1)
+              : title}
+          </Typography>
           <Grid
             width={"100%"}
             container
@@ -44,7 +48,7 @@ const RecipeGrid: FC<{ type: RecipeType; categoryId?: string }> = ({
             columnSpacing={{ sm: 5, lg: 6 }}
           >
             {metadata.map((m, i) => (
-              <Grid key={i} item xs={12} sm={6} md={4} maxHeight={"550px"}>
+              <Grid key={i} item xs={12} sm={6} md={4} height={{xs: "500px", lg: "600px"}}>
                 <RecipeThumbnail metadata={m} categoryId={categoryId} />
               </Grid>
             ))}

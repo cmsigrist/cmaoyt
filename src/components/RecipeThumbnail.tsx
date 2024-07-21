@@ -24,15 +24,8 @@ const RecipeThumbnail: FC<{ metadata: Metadata; categoryId?: string }> = ({
 }) => {
   const isCategory = metadata instanceof CategoryMetadata;
   const route = isCategory
-    ? ROUTE_CATEGORY(
-        metadata.type,
-        metadata.id
-      )
-    : ROUTE_RECIPE(
-        metadata.type,
-        metadata.id,
-        categoryId
-      );
+    ? ROUTE_CATEGORY(metadata.type, metadata.id)
+    : ROUTE_RECIPE(metadata.type, metadata.id, categoryId);
 
   const img = () => {
     if (isCategory) {
@@ -72,14 +65,12 @@ const RecipeThumbnail: FC<{ metadata: Metadata; categoryId?: string }> = ({
           gridColumn={2}
         >
           {recipes.slice(0, 4).map((recipe, i) => (
-            <Grid width={"100%"} height={"100%"} key={i} container>
-              <Grid key={i} item xs={6}>
-                <img
-                  src={recipe.imgURL}
-                  alt=""
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              </Grid>
+            <Grid key={i} item xs={6}>
+              <img
+                src={recipe.imgURL}
+                alt=""
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
             </Grid>
           ))}
         </Grid>

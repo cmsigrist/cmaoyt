@@ -180,8 +180,8 @@ const fetchCategories = async (
       }
     });
 
-    setCategories(categories);
   }
+  setCategories(categories);
   setLoading(false);
 };
 

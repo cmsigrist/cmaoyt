@@ -9,14 +9,13 @@ import {
   Button,
   Container,
   IconButton,
-  InputBase,
   Popover,
   Stack,
   Toolbar,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { alpha, styled, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 // Components
 import LoginModal from "../pages/LoginModal";
 // Hooks
